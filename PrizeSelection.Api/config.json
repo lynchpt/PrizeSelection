@@ -1,0 +1,7 @@
+﻿{
+  "LoggingOptions": {
+    "LogFilePath": "PrizeSelection.Api.Log-{Date}.txt",
+    "ApplicationInsightsKey": "Placeholder",
+    "AppComponentName": "PrizeSelection.Api"
+  }
+}
