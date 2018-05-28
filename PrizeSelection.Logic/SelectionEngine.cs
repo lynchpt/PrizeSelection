@@ -12,7 +12,7 @@ namespace PrizeSelection.Logic
 
         IList<PrizeResultRow> SelectPrizes(IList<SelectionDomain> selectionDomains, int selectionCount, Random random = null);
 
-        PrizeSelectionRow SelectPrizeFromPrizeTable(IList<PrizeSelectionRow> prizeSelectionTable, double randomNumber);
+        //PrizeSelectionRow SelectPrizeFromPrizeTable(IList<PrizeSelectionRow> prizeSelectionTable, double randomNumber);
 
         #region Deprecated
         //IDictionary<int, int> SimulateBulkPullGeneric(int bannerRelicCount, IList<SelectionDomain> selectionDomains, Random random = null);
@@ -146,9 +146,11 @@ namespace PrizeSelection.Logic
             return combinedPrizeResultTable;
         }
 
+
+        #region Private Methods
         //null row = no matching prizes were found
-        public PrizeSelectionRow SelectPrizeFromPrizeTable(IList<PrizeSelectionRow> prizeSelectionTable, double randomNumber)
-        {       
+        private PrizeSelectionRow SelectPrizeFromPrizeTable(IList<PrizeSelectionRow> prizeSelectionTable, double randomNumber)
+        {
             PrizeSelectionRow selectedPrize = null;
 
             //scan table from the top down until we find the first prize whose lower bound is less than or equal to than the provided roll; 
@@ -167,6 +169,7 @@ namespace PrizeSelection.Logic
 
             return selectedPrize;
         }
+        #endregion
 
         #region Deprecated
         //public IDictionary<int, int> SimulateBulkPullGeneric(int bannerRelicCount, IList<SelectionDomain> selectionDomains, Random random = null)

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PrizeSelection.Model
@@ -22,5 +24,12 @@ namespace PrizeSelection.Model
         //should not be set simultaneously with PrizeCategoryName; set one and let the other be derived
         //Whether assigned or derived, each resulting prize name for each prize catgory will end up as a row in the PrizeSelectionRow
         public IList<string> PrizeNames { get; set; }
+
+        public override string ToString()
+        {
+            string names = PrizeNames != null ? String.Join(";", PrizeNames) : String.Empty;
+
+            return $"{PrizeCategoryName,-25}{ProbabilityExtentForEntireCategory,-15}{PrizeCount,-8}{names,-50}";
+        }
     }
 }
