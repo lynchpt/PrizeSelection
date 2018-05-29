@@ -18,6 +18,7 @@ namespace PrizeSelection.Test
         private IPrizeSelectionTableHelper _prizeSelectionTableHelper;
         private IPrizeResultsTableHelper _prizeResultsTableHelper;
         private ISelectionEngine _selectionEngine;
+        private ISelectionSuccessCalculator _selectionSuccessCalculator;
         private static Random _random;
         #endregion
 
@@ -35,6 +36,7 @@ namespace PrizeSelection.Test
             _prizeSelectionTableHelper = new PrizeSelectionTableHelper(_resultsFormatter);
             _prizeResultsTableHelper = new PrizeResultsTableHelper();
             _selectionEngine = new SelectionEngine(_prizeSelectionTableHelper, _prizeResultsTableHelper);
+            _selectionSuccessCalculator = new SelectionSuccessCalculator(_prizeResultsTableHelper, _selectionEngine);
         }
 
 
@@ -323,7 +325,6 @@ namespace PrizeSelection.Test
         }
         #endregion
 
-
         //test creating prize selection tables - IPrizeSelectionTableHelper.GetPrizeSelectionTable
         #region Prize Selection Table Tests
 
@@ -431,7 +432,6 @@ namespace PrizeSelection.Test
             WritePrizePrizeSelectionTableTextToConsole(prizeSelectionTable);
         }
         #endregion
-
 
         //test creating prize result tables
         #region SelectionEngine
@@ -768,6 +768,112 @@ namespace PrizeSelection.Test
 
         #endregion
 
+        #region Selection Success Calculator
+
+        [TestMethod]
+        public void GetChanceToMeetSuccessCriteriaForFixedSelectionCount_FFRK_Simple_Success()
+        {            
+            //success criteria
+            int prizeCountOnBanner = 14; //14 prizes on banner
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+            successCriteria[1] = 1;
+            successCriteria[2] = 1;
+
+            //selection count
+            int selectionCount = 8; //8 pulls on the banner
+
+            //selectionDomains
+            IList<PrizeCategorySpecification> specsFFRKSimpleGuaranteedWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Simple_Guaranteed_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKSimpleGuaranteedWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKSimpleGuaranteedWithoutNames);
+
+            IList<PrizeCategorySpecification> specsFFRKSimpleVariableWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Simple_Variable_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKSimpleVariableWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKSimpleVariableWithoutNames);
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKSimpleGuaranteedWithoutNames
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKSimpleVariableWithoutNames
+                                                          }
+
+                                                      };
+
+            double results = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaForFixedSelectionCount(
+                successCriteria, selectionCount, selectionDomains);
+
+            Assert.AreNotEqual(0, results);
+
+            Console.WriteLine($"Chance for {selectionCount} prize selections to meet success criteria: {results}");
+        }
+
+        [TestMethod]
+        public void GetChanceToMeetSuccessCriteriaForFixedSelectionCount_FFRK_Detailed_Success()
+        {
+            //success criteria
+            int prizeCountOnBanner = 16; //14 prizes on banner
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+            successCriteria[1] = 1;
+            successCriteria[2] = 1;
+
+            //selection count
+            int selectionCount = 8; //8 pulls on the banner
+
+            //selectionDomains
+            IList<PrizeCategorySpecification> specsFFRKDetailedGuaranteedWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Guaranteed_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedGuaranteedWithoutNames);
+
+            IList<PrizeCategorySpecification> specsFFRKDetailedVariableWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedVariableWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedVariableWithoutNames);
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedVariableWithoutNames
+                                                          }
+
+                                                      };
+
+            double results = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaForFixedSelectionCount(
+                successCriteria, selectionCount, selectionDomains);
+
+            Assert.AreNotEqual(0, results);
+
+            Console.WriteLine($"Chance for {selectionCount} prize selections to meet success criteria: {results}");
+
+
+        }
+        #endregion
 
         #region FFRK Focused Helper Methods
 
@@ -961,8 +1067,6 @@ namespace PrizeSelection.Test
             return specs;
         }
 
-
-
         public IList<string> GetFestBannerRelicNamesSimple(int bannerIndex)
         {
             if (bannerIndex < 1 || bannerIndex > 5)
@@ -995,7 +1099,9 @@ namespace PrizeSelection.Test
             return relicNames;
         }
 
+        #endregion
 
+        #region Console Output Methods
         public void WritePrizeResultTableJsonToConsole(IList<PrizeResultRow> prizeResultsTable)
         {
             string results = JsonConvert.SerializeObject(prizeResultsTable, Formatting.Indented);
