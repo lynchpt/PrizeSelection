@@ -8,11 +8,11 @@ namespace PrizeSelection.Logic
 {
     public interface ISelectionSuccessCalculator
     {
-        double GetChanceToMeetSuccessCriteriaForFixedSelectionCount(IDictionary<int, int> successCriteria, int selectionCount, IList<SelectionDomain> selectionDomains, Random random = null);
+        double GetChanceToMeetSuccessCriteriaForFixedSelectionCount(IDictionary<int, int> successCriteria, IList<SelectionDomain> selectionDomains, int selectionCount,  Random random = null);
 
         PrizeSelectionsForSuccessInfo GetResultsForPullsUntilSuccess(IDictionary<int, int> successCriteria, IList<SelectionDomain> selectionDomains, Random random = null);
 
-        bool DoPrizeResultsMeetSuccessCriteria(IList<PrizeResultRow> prizeResultTable, IDictionary<int, int> successCriteria);
+        //bool DoPrizeResultsMeetSuccessCriteria(IList<PrizeResultRow> prizeResultTable, IDictionary<int, int> successCriteria);
 
         #region Deprecated
         //double GetChanceToMeetSuccessCriteriaForFixedPulls(IDictionary<int, int> successCriteria, int numberOfPulls, int bannerRelicCount, IList<SelectionDomain> pullCategoryParameterSets, Random random = null);
@@ -43,8 +43,8 @@ namespace PrizeSelection.Logic
         //Chance that making X selections from the PrizeSelectionTable will select all the desired prizes in the desired amounts
         //criteria are met if for each prize index with non zero count in criteria, 
         //the corresponding prize index in the prize results table has a count >= the criteria count
-        public double GetChanceToMeetSuccessCriteriaForFixedSelectionCount(IDictionary<int, int> successCriteria, int selectionCount,
-            IList<SelectionDomain> selectionDomains, Random random = null)
+        public double GetChanceToMeetSuccessCriteriaForFixedSelectionCount(IDictionary<int, int> successCriteria, IList<SelectionDomain> selectionDomains, 
+            int selectionCount,  Random random = null)
         {
             double trials = 10000; //harcoded so user can't DOS
             int successes = 0;
@@ -99,7 +99,7 @@ namespace PrizeSelection.Logic
                     //IDictionary<int, int> pullResults = _selectionEngine.SimulateBulkPullGeneric(bannerRelicCount, pullCategoryParameterSets, random);
                     IList<PrizeResultRow> localPrizeResultsTable = _selectionEngine.SelectPrizes(selectionDomains, random);
 
-                    if (counter == 0)
+                    if (counter == 1)
                     {
                         trialCombinedPrizeResultsTable = localPrizeResultsTable;
                     }
@@ -135,7 +135,10 @@ namespace PrizeSelection.Logic
 
         }
 
-        public bool DoPrizeResultsMeetSuccessCriteria(IList<PrizeResultRow> prizeResultTable, IDictionary<int, int> successCriteria)
+
+        #region Private Methods
+
+        private bool DoPrizeResultsMeetSuccessCriteria(IList<PrizeResultRow> prizeResultTable, IDictionary<int, int> successCriteria)
         {
             //validations
             if (prizeResultTable == null || successCriteria == null)
@@ -166,7 +169,6 @@ namespace PrizeSelection.Logic
             return isSuccess;
         }
 
-        #region Private Methods
 
         private int GetModeFromList(IList<int> numberList)
         {

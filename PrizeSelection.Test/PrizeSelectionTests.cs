@@ -769,18 +769,26 @@ namespace PrizeSelection.Test
         #endregion
 
         #region Selection Success Calculator
+        
+        [DataTestMethod]
+        [DataRow(2, 4)]
+        [DataRow(3, 4)]
+        [DataRow(4, 4)]
+        [DataRow(2, 6)]
+        [DataRow(3, 6)]
+        [DataRow(4, 6)]
 
-        [TestMethod]
-        public void GetChanceToMeetSuccessCriteriaForFixedSelectionCount_FFRK_Simple_Success()
+        public void GetChanceToMeetSuccessCriteriaForFixedSelectionCount_FFRK_Simple_Success(int prizesSought, int selectionCount)
         {            
             //success criteria
             int prizeCountOnBanner = 14; //14 prizes on banner
             IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
-            successCriteria[1] = 1;
-            successCriteria[2] = 1;
 
-            //selection count
-            int selectionCount = 8; //8 pulls on the banner
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+
 
             //selectionDomains
             IList<PrizeCategorySpecification> specsFFRKSimpleGuaranteedWithoutNames =
@@ -814,24 +822,32 @@ namespace PrizeSelection.Test
                                                       };
 
             double results = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaForFixedSelectionCount(
-                successCriteria, selectionCount, selectionDomains);
+                successCriteria, selectionDomains, selectionCount);
 
             Assert.AreNotEqual(0, results);
 
             Console.WriteLine($"Chance for {selectionCount} prize selections to meet success criteria: {results}");
         }
 
-        [TestMethod]
-        public void GetChanceToMeetSuccessCriteriaForFixedSelectionCount_FFRK_Detailed_Success()
+
+        [DataTestMethod]
+        [DataRow(2, 4)]
+        [DataRow(3, 4)]
+        [DataRow(4, 4)]
+        [DataRow(2, 6)]
+        [DataRow(3, 6)]
+        [DataRow(4, 6)]
+        public void GetChanceToMeetSuccessCriteriaForFixedSelectionCount_FFRK_Detailed_Success(int prizesSought, int selectionCount)
         {
             //success criteria
-            int prizeCountOnBanner = 16; //14 prizes on banner
+            int prizeCountOnBanner = 16; //16 prizes on banner
             IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
-            successCriteria[1] = 1;
-            successCriteria[2] = 1;
 
-            //selection count
-            int selectionCount = 8; //8 pulls on the banner
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+
 
             //selectionDomains
             IList<PrizeCategorySpecification> specsFFRKDetailedGuaranteedWithoutNames =
@@ -865,13 +881,128 @@ namespace PrizeSelection.Test
                                                       };
 
             double results = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaForFixedSelectionCount(
-                successCriteria, selectionCount, selectionDomains);
+                successCriteria, selectionDomains, selectionCount);
 
             Assert.AreNotEqual(0, results);
 
             Console.WriteLine($"Chance for {selectionCount} prize selections to meet success criteria: {results}");
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        [DataRow(4)]
+        [DataRow(5)]
+        [DataRow(6)]
+
+        public void GetResultsForPullsUntilSuccess_Simple_Success(int prizesSought)
+        {
+            //success criteria
+            int prizeCountOnBanner = 14; //14 prizes on banner
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
 
 
+            //selectionDomains
+            IList<PrizeCategorySpecification> specsFFRKSimpleGuaranteedWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Simple_Guaranteed_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKSimpleGuaranteedWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKSimpleGuaranteedWithoutNames);
+
+            IList<PrizeCategorySpecification> specsFFRKSimpleVariableWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Simple_Variable_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKSimpleVariableWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKSimpleVariableWithoutNames);
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKSimpleGuaranteedWithoutNames
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKSimpleVariableWithoutNames
+                                                          }
+
+                                                      };
+
+            PrizeSelectionsForSuccessInfo results = _selectionSuccessCalculator.GetResultsForPullsUntilSuccess(successCriteria, selectionDomains);
+
+            Assert.IsNotNull(results);
+
+            Console.WriteLine(results.ToString());
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        [DataRow(4)]
+        [DataRow(5)]
+        [DataRow(6)]
+
+        public void GetResultsForPullsUntilSuccess_Detailed_Success(int prizesSought)
+        {
+            //success criteria
+            int prizeCountOnBanner = 16; //16 prizes on banner
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+
+
+            //selectionDomains
+
+            IList<PrizeCategorySpecification> specsFFRKDetailedGuaranteedWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Guaranteed_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedGuaranteedWithoutNames);
+
+            IList<PrizeCategorySpecification> specsFFRKDetailedVariableWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedVariableWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedVariableWithoutNames);
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedVariableWithoutNames
+                                                          }
+
+                                                      };
+
+            PrizeSelectionsForSuccessInfo results = _selectionSuccessCalculator.GetResultsForPullsUntilSuccess(successCriteria, selectionDomains);
+
+            Assert.IsNotNull(results);
+
+            Console.WriteLine(results.ToString());
         }
         #endregion
 
@@ -1079,19 +1210,19 @@ namespace PrizeSelection.Test
             switch(bannerIndex)
             {
                 case 1:
-                    relicNames = new List<string>() { "Diamond Shield", "Hyperion Custom", "Magic Album", "Aegis Grimoire", "Saintly Excalibur", "Urara Institute Uniform", "Doom Mace", "Ragnarok", "Yoshiyuki Shinuchi", "Akademeia Uniform", "Uraras Institute Hat", "Blitz Armor", "Institute Hat", "Flame Shield" };
+                    relicNames = new List<string>() { "Diamond Shield (T)", "Hyperion Custom (8)", "Magic Album (C)", "Aegis Grimoire (C)", "Saintly Excalibur (T)", "Urara Institute Uniform (C)", "Doom Mace (12)", "Ragnarok (6)", "Yoshiyuki Shinuchi (7)", "Akademeia Uniform (B)", "Uraras Institute Hat (C)", "Blitz Armor (8)", "Institute Hat (C)", "Flame Shield (T)" };
                     break;
                 case 2:
-                    relicNames = new List<string>() { "Hauteclaire (XIII)", "Enkindler (VIII)", "Kain's Lance (IV)", "Conformer (VIII)", "Razor Carbine (XIII)", "Lifesaber (XIII)", "Squall's Contempt (VIII)", "Axis Blade (VIII)", "Enkindler (XIII)", "Crystal Cross (VIII)", "Abel Lance (IV)", "Lightning's Reprise (XIII)", "Lion Gloves (VIII)", "Dragoon Gauntlets (IV)"};
+                    relicNames = new List<string>() { "Durandal (6)", "Gilgamesh Armor (5)", "Ame no Murakumo (5)", "Apocalypse (6)", "Chicken Knife (5)", "Terra Cloak (6)", "Furinkazan (5)", "Terra Armguard (6)", "Bartz Model (5)", "Tiger Fang (8)", "Rune Staff (5)", "Gold Armor (5)", "Asura Rod (6)", "Maximillian (5)" };
                     break;
                 case 3:
-                    relicNames = new List<string>() { "Rune Axe (III)", "Excalibur Trueblade (T)", "Onion Blade (III)", "Chicken Knife (V)", "Blade of Brennaere (XV)", "Crystal Shield (III)", "Great Sword (V)", "War Sword (XV)", "Kaiser Knuckle (VII)", "Onion Gauntlets (III)", "Genji Armor (III)", "Gladiolus' Fatigues (XV)", "Maximillian (V)", "Tifa's Guise (VII)" };
+                    relicNames = new List<string>() { "Ultima Weapon (7)", "Axe of the Conqueror (15)", "Cloud Gauntlets (7)", "Heal Rod (7)", "Enhancer (7)", "2nd Fusion Sword (7)", "Bow of the Clever (15)", "Ultima Blade (7)", "Rune Blade (7)", "Prince Fatigues (15)", "Moogle Doll (15)", "Neo Organics (7)", "Aerith Guise (7)", "Bronze Bangle (15)" };
                     break;
                 case 4:
-                    relicNames = new List<string>() { "Masamune (III)", "Enhancer (VII)", "Force Stealer (VII-CC)", "Kiku-ichimonji (III)", "Force Stealer (VII)", "Mighty Hammer (III)", "Gladius (V)", "Ultima Blade (VII)", "Rune Blade (VII - CC)", "Sargatanas (IX)", "Ninja Gear (IX)", "Blessed Hammer (III)", "Steady Light (VII)", "Shinra Beta+ (VII-CC)" };
+                    relicNames = new List<string>() { "Vigilante (10)", "Enkindler (8)", "Sorcery Targe (10)", "Unsetting Sun (13)", "Blitz Ace (10)", "Third F (8)", "Axis Blade (8)", "Twilight Steel (10)", "Onyx Targe (10)", "AMP Coat (13)", "Ninja Gear (IX)", "Lion Gloves (8)", "Tidus Armguard (10)", "Warrior Targe (10)" };
                     break;
                 case 5:
-                    relicNames = new List<string>() { "Durandal (VI)", "Conformer (VII)", "Red Scorpion (V)", "Double Edge (X)", "Oritsuru (VII)", "Terra's Cloak (VI)", "Mystile (VII)", "Terra's Armguard (VI)", "Spiral Shuriken (VII)", "Twilight Steel (X)", "Asura's Rod (VI)", "Yuffie's Guise (VII)", "Tidus' Armguard (X)", "Krile's Dress (V)" };
+                    relicNames = new List<string>() { "Duel Claws (7)", "Tournesol (12)", "Garnet Tights (9)", "Tifa Gloves (7)", "Ragnarok (12)", "Power Gloves (7)", "Aegis Shield (12)", "Oversoul (7)", "Staff of Ramuh (9)", "Aristocrat Crown (11)", "Nunchak (8)", "Princess Gloves (9)", "Tifa Guise (7)", "Ashe Gloves (12)" };
                     break;
 
             }
