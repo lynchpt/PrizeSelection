@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
+using PrizeSelection.Logic;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Swashbuckle.AspNetCore.Swagger;
@@ -99,7 +100,15 @@ namespace PrizeSelection.Api
 
         protected virtual void ConfigureDependencyInjection(IServiceCollection services)
         {
-            
+            //services.AddScoped<IAbilitiesLogic, AbilitiesLogic>();
+            //private readonly IPrizeSelectionTableHelper _prizeSelectionTableHelper;
+            //private readonly ISelectionEngine _selectionEngine; IResultsFormatter
+            services.AddScoped<IResultsFormatter, ResultsFormatter>();
+            services.AddScoped<IPrizeSelectionTableHelper, PrizeSelectionTableHelper>();
+            services.AddScoped<IPrizeResultsTableHelper, PrizeResultsTableHelper>();
+            services.AddScoped<ISelectionEngine, SelectionEngine>();
+
+            services.AddSingleton<IMapper>(ConfigureMappings);
         }
 
         private void ConfigureOptions(IServiceCollection services)

@@ -25,7 +25,6 @@ namespace PrizeSelection.Api.Controllers
     {
         #region Class Variables
 
-        //private readonly ICharactersLogic _charactersLogic;
         private readonly IMapper _mapper;
         private readonly ILogger<PrizeSelectionTableController> _logger;
         #endregion

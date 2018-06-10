@@ -1,0 +1,518 @@
+[
+    {
+        "prizeCategoryName": "FiveSixStar",
+        "probabilityExtentForEntireCategory": 0.9971509971509972,
+        "prizeCount": 14,
+        "prizeNames": [
+            "Diamond Shield (T)",
+            "Hyperion Custom (8)",
+            "Magic Album (C)",
+            "Aegis Grimoire (C)",
+            "Saintly Excalibur (T)",
+            "Urara Institute Uniform (C)",
+            "Doom Mace (12)",
+            "Ragnarok (6)",
+            "Yoshiyuki Shinuchi (7)",
+            "Akademeia Uniform (B)",
+            "Uraras Institute Hat (C)",
+            "Blitz Armor (8)",
+            "Institute Hat (C)",
+            "Flame Shield (T)"
+        ]
+    }
+]
+
+-------
+
+[
+    {
+        "prizeCategoryName": "OffBanSixStar",
+        "probabilityExtentForEntireCategory": 0.0014245014245014246,
+        "prizeCount": 1,
+        "prizeNames": [
+            "OffBan 6*"
+        ]
+    }
+]
+
+----------
+
+[
+    {
+        "prizeCategoryName": "OffBanFiveStar",
+        "probabilityExtentForEntireCategory": 0.0014245014245014246,
+        "prizeCount": 1,
+        "prizeNames": [
+            "OffBan 5*"
+        ]
+    }
+]
+
+---------------------
+---------------------
+
+[
+    {
+        "prizeCategoryName": "FiveSixStar",
+        "probabilityExtentForEntireCategory": 0.11666666666666667,
+        "prizeCount": 14,
+        "prizeNames": [
+            "Diamond Shield (T)",
+            "Hyperion Custom (8)",
+            "Magic Album (C)",
+            "Aegis Grimoire (C)",
+            "Saintly Excalibur (T)",
+            "Urara Institute Uniform (C)",
+            "Doom Mace (12)",
+            "Ragnarok (6)",
+            "Yoshiyuki Shinuchi (7)",
+            "Akademeia Uniform (B)",
+            "Uraras Institute Hat (C)",
+            "Blitz Armor (8)",
+            "Institute Hat (C)",
+            "Flame Shield (T)"
+        ]
+    }
+]
+
+-------
+
+[
+    {
+        "prizeCategoryName": "OffBanSixStar",
+        "probabilityExtentForEntireCategory": 0.0014245014245014246,
+        "prizeCount": 1,
+        "prizeNames": [
+            "OffBan 6*"
+        ]
+    }
+]
+
+----------
+
+[
+    {
+        "prizeCategoryName": "OffBanFiveStar",
+        "probabilityExtentForEntireCategory": 0.0014245014245014246,
+        "prizeCount": 1,
+        "prizeNames": [
+            "OffBan 5*"
+        ]
+    }
+]
+
+
+--------------
+--------------
+--------------
+
+[
+    {
+        "prizeIndex": 1,
+        "prizeProbabilityLowerBound": 0.92877492877492873,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Diamond Shield (T)"
+    },
+    {
+        "prizeIndex": 2,
+        "prizeProbabilityLowerBound": 0.85754985754985757,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Hyperion Custom (8)"
+    },
+    {
+        "prizeIndex": 3,
+        "prizeProbabilityLowerBound": 0.78632478632478631,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Magic Album (C)"
+    },
+    {
+        "prizeIndex": 4,
+        "prizeProbabilityLowerBound": 0.71509971509971515,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Aegis Grimoire (C)"
+    },
+    {
+        "prizeIndex": 5,
+        "prizeProbabilityLowerBound": 0.64387464387464388,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Saintly Excalibur (T)"
+    },
+    {
+        "prizeIndex": 6,
+        "prizeProbabilityLowerBound": 0.57264957264957261,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Urara Institute Uniform (C)"
+    },
+    {
+        "prizeIndex": 7,
+        "prizeProbabilityLowerBound": 0.50142450142450135,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Doom Mace (12)"
+    },
+    {
+        "prizeIndex": 8,
+        "prizeProbabilityLowerBound": 0.43019943019943019,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Ragnarok (6)"
+    },
+    {
+        "prizeIndex": 9,
+        "prizeProbabilityLowerBound": 0.35897435897435892,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Yoshiyuki Shinuchi (7)"
+    },
+    {
+        "prizeIndex": 10,
+        "prizeProbabilityLowerBound": 0.28774928774928776,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Akademeia Uniform (B)"
+    },
+    {
+        "prizeIndex": 11,
+        "prizeProbabilityLowerBound": 0.2165242165242165,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Uraras Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 12,
+        "prizeProbabilityLowerBound": 0.14529914529914523,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Blitz Armor (8)"
+    },
+    {
+        "prizeIndex": 13,
+        "prizeProbabilityLowerBound": 0.07407407407407407,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 14,
+        "prizeProbabilityLowerBound": 0.0028490028490028019,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Flame Shield (T)"
+    },
+    {
+        "prizeIndex": 15,
+        "prizeProbabilityLowerBound": 0.0014245014245013773,
+        "prizeCategoryName": "OffBanSixStar",
+        "prizeName": "OffBan 6*"
+    },
+    {
+        "prizeIndex": 16,
+        "prizeProbabilityLowerBound": 0,
+        "prizeCategoryName": "OffBanFiveStar",
+        "prizeName": "OffBan 5*"
+    }
+]
+
+----------------
+
+[
+    {
+        "prizeIndex": 1,
+        "prizeProbabilityLowerBound": 0.9916666666666667,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Diamond Shield (T)"
+    },
+    {
+        "prizeIndex": 2,
+        "prizeProbabilityLowerBound": 0.98333333333333328,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Hyperion Custom (8)"
+    },
+    {
+        "prizeIndex": 3,
+        "prizeProbabilityLowerBound": 0.975,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Magic Album (C)"
+    },
+    {
+        "prizeIndex": 4,
+        "prizeProbabilityLowerBound": 0.96666666666666667,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Aegis Grimoire (C)"
+    },
+    {
+        "prizeIndex": 5,
+        "prizeProbabilityLowerBound": 0.95833333333333337,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Saintly Excalibur (T)"
+    },
+    {
+        "prizeIndex": 6,
+        "prizeProbabilityLowerBound": 0.95,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Urara Institute Uniform (C)"
+    },
+    {
+        "prizeIndex": 7,
+        "prizeProbabilityLowerBound": 0.94166666666666665,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Doom Mace (12)"
+    },
+    {
+        "prizeIndex": 8,
+        "prizeProbabilityLowerBound": 0.93333333333333335,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Ragnarok (6)"
+    },
+    {
+        "prizeIndex": 9,
+        "prizeProbabilityLowerBound": 0.925,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Yoshiyuki Shinuchi (7)"
+    },
+    {
+        "prizeIndex": 10,
+        "prizeProbabilityLowerBound": 0.91666666666666663,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Akademeia Uniform (B)"
+    },
+    {
+        "prizeIndex": 11,
+        "prizeProbabilityLowerBound": 0.90833333333333333,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Uraras Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 12,
+        "prizeProbabilityLowerBound": 0.9,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Blitz Armor (8)"
+    },
+    {
+        "prizeIndex": 13,
+        "prizeProbabilityLowerBound": 0.89166666666666661,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 14,
+        "prizeProbabilityLowerBound": 0.8833333333333333,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Flame Shield (T)"
+    },
+    {
+        "prizeIndex": 15,
+        "prizeProbabilityLowerBound": 0.88190883190883185,
+        "prizeCategoryName": "OffBanSixStar",
+        "prizeName": "OffBan 6*"
+    },
+    {
+        "prizeIndex": 16,
+        "prizeProbabilityLowerBound": 0.88048433048433039,
+        "prizeCategoryName": "OffBanFiveStar",
+        "prizeName": "OffBan 5*"
+    }
+]
+
+------------------------
+------------------------
+------------------------
+-----------------------
+[
+{
+	prizesToSelectFromDomainCount: 1,
+	selectionDomainName: "Guaranteed",
+	prizeSelectionTable: [
+    {
+        "prizeIndex": 1,
+        "prizeProbabilityLowerBound": 0.92877492877492873,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Diamond Shield (T)"
+    },
+    {
+        "prizeIndex": 2,
+        "prizeProbabilityLowerBound": 0.85754985754985757,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Hyperion Custom (8)"
+    },
+    {
+        "prizeIndex": 3,
+        "prizeProbabilityLowerBound": 0.78632478632478631,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Magic Album (C)"
+    },
+    {
+        "prizeIndex": 4,
+        "prizeProbabilityLowerBound": 0.71509971509971515,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Aegis Grimoire (C)"
+    },
+    {
+        "prizeIndex": 5,
+        "prizeProbabilityLowerBound": 0.64387464387464388,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Saintly Excalibur (T)"
+    },
+    {
+        "prizeIndex": 6,
+        "prizeProbabilityLowerBound": 0.57264957264957261,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Urara Institute Uniform (C)"
+    },
+    {
+        "prizeIndex": 7,
+        "prizeProbabilityLowerBound": 0.50142450142450135,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Doom Mace (12)"
+    },
+    {
+        "prizeIndex": 8,
+        "prizeProbabilityLowerBound": 0.43019943019943019,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Ragnarok (6)"
+    },
+    {
+        "prizeIndex": 9,
+        "prizeProbabilityLowerBound": 0.35897435897435892,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Yoshiyuki Shinuchi (7)"
+    },
+    {
+        "prizeIndex": 10,
+        "prizeProbabilityLowerBound": 0.28774928774928776,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Akademeia Uniform (B)"
+    },
+    {
+        "prizeIndex": 11,
+        "prizeProbabilityLowerBound": 0.2165242165242165,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Uraras Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 12,
+        "prizeProbabilityLowerBound": 0.14529914529914523,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Blitz Armor (8)"
+    },
+    {
+        "prizeIndex": 13,
+        "prizeProbabilityLowerBound": 0.07407407407407407,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 14,
+        "prizeProbabilityLowerBound": 0.0028490028490028019,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Flame Shield (T)"
+    },
+    {
+        "prizeIndex": 15,
+        "prizeProbabilityLowerBound": 0.0014245014245013773,
+        "prizeCategoryName": "OffBanSixStar",
+        "prizeName": "OffBan 6*"
+    },
+    {
+        "prizeIndex": 16,
+        "prizeProbabilityLowerBound": 0,
+        "prizeCategoryName": "OffBanFiveStar",
+        "prizeName": "OffBan 5*"
+    }
+	]
+},
+{
+	prizesToSelectFromDomainCount: 10,
+	selectionDomainName: "Variable",
+	prizeSelectionTable: [
+    {
+        "prizeIndex": 1,
+        "prizeProbabilityLowerBound": 0.9916666666666667,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Diamond Shield (T)"
+    },
+    {
+        "prizeIndex": 2,
+        "prizeProbabilityLowerBound": 0.98333333333333328,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Hyperion Custom (8)"
+    },
+    {
+        "prizeIndex": 3,
+        "prizeProbabilityLowerBound": 0.975,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Magic Album (C)"
+    },
+    {
+        "prizeIndex": 4,
+        "prizeProbabilityLowerBound": 0.96666666666666667,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Aegis Grimoire (C)"
+    },
+    {
+        "prizeIndex": 5,
+        "prizeProbabilityLowerBound": 0.95833333333333337,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Saintly Excalibur (T)"
+    },
+    {
+        "prizeIndex": 6,
+        "prizeProbabilityLowerBound": 0.95,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Urara Institute Uniform (C)"
+    },
+    {
+        "prizeIndex": 7,
+        "prizeProbabilityLowerBound": 0.94166666666666665,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Doom Mace (12)"
+    },
+    {
+        "prizeIndex": 8,
+        "prizeProbabilityLowerBound": 0.93333333333333335,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Ragnarok (6)"
+    },
+    {
+        "prizeIndex": 9,
+        "prizeProbabilityLowerBound": 0.925,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Yoshiyuki Shinuchi (7)"
+    },
+    {
+        "prizeIndex": 10,
+        "prizeProbabilityLowerBound": 0.91666666666666663,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Akademeia Uniform (B)"
+    },
+    {
+        "prizeIndex": 11,
+        "prizeProbabilityLowerBound": 0.90833333333333333,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Uraras Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 12,
+        "prizeProbabilityLowerBound": 0.9,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Blitz Armor (8)"
+    },
+    {
+        "prizeIndex": 13,
+        "prizeProbabilityLowerBound": 0.89166666666666661,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Institute Hat (C)"
+    },
+    {
+        "prizeIndex": 14,
+        "prizeProbabilityLowerBound": 0.8833333333333333,
+        "prizeCategoryName": "FiveSixStar",
+        "prizeName": "Flame Shield (T)"
+    },
+    {
+        "prizeIndex": 15,
+        "prizeProbabilityLowerBound": 0.88190883190883185,
+        "prizeCategoryName": "OffBanSixStar",
+        "prizeName": "OffBan 6*"
+    },
+    {
+        "prizeIndex": 16,
+        "prizeProbabilityLowerBound": 0.88048433048433039,
+        "prizeCategoryName": "OffBanFiveStar",
+        "prizeName": "OffBan 5*"
+    }
+]
+}
+]

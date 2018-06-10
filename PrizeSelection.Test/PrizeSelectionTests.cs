@@ -1164,18 +1164,32 @@ namespace PrizeSelection.Test
 
         public IList<PrizeCategorySpecification> GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithName(int banner)
         {
-            string onBannerFiveOrSixStaPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStarPrizeCategoryName = "5/6 *";
+            string offBannerSixStarPrizeCategoryName = "OffBan 6*";
+            string offBannerFiveStarPrizeCategoryName = "OffBan 5*";
 
             double onBannerFiveOrSixStarRate = 7.0 / 60.0; // = 0.11666666666666666666666666666667
+            double offBannerSixStarRate = (0.02 / 14.04); // = .001424501 etc
+            double offBannerFiveStarRate = (0.02 / 14.04); // = .001424501 etc
 
             IList<string> prizeNames = GetFestBannerRelicNamesSimple(banner);
 
             IList<PrizeCategorySpecification> specs = new List<PrizeCategorySpecification>()
                                                       {
                                                           _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
-                                                              onBannerFiveOrSixStaPrizeCategoryName,
+                                                              onBannerFiveOrSixStarPrizeCategoryName,
                                                               onBannerFiveOrSixStarRate,
-                                                              prizeNames)
+                                                              prizeNames),
+
+                                                          _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                                                              offBannerSixStarPrizeCategoryName,
+                                                              offBannerSixStarRate,
+                                                              new List<string>(){offBannerSixStarPrizeCategoryName}),
+
+                                                          _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                                                              offBannerFiveStarPrizeCategoryName,
+                                                              offBannerFiveStarRate,
+                                                              new List<string>(){offBannerFiveStarPrizeCategoryName})
                                                       };
             return specs;
         }

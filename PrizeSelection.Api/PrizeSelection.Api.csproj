@@ -8,6 +8,17 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\PrizeSelection.Api.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netcoreapp2.0\PrizeSelection.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
@@ -29,7 +40,15 @@
   <ItemGroup>
     <ProjectReference Include="..\Dto.Api\Dto.Api.csproj" />
     <ProjectReference Include="..\Logic.Api\Logic.Api.csproj" />
+    <ProjectReference Include="..\PrizeSelection.Logic\PrizeSelection.Logic.csproj" />
     <ProjectReference Include="..\PrizeSelection.Model\PrizeSelection.Model.csproj" />
   </ItemGroup>
+
+  <!-- This was added to enure that the Swagger / Swashbuckle XML documentation file gets copied to the output directory on the build server for self contained build -->
+  <Target Name="CopyDocumentationFile" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(FinalDocFile)" RelativePath="@(FinalDocFile->'%(Filename)%(Extension)')" />
+    </ItemGroup>
+  </Target>
 
 </Project>
