@@ -13,7 +13,7 @@ namespace PrizeSelection.Model
 
         public override string ToString()
         {
-            return $"{PrizeIndex,-8}{PrizeSelectedCount,-8}{PrizeCategoryName,-15}{PrizeName,-50}";
+            return $"{PrizeIndex,-8}{PrizeSelectedCount,-8}{PrizeCategoryName,-25}{PrizeName,-50}";
         }
     }
 }

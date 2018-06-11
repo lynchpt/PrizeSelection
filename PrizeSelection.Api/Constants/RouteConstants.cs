@@ -14,13 +14,15 @@ namespace PrizeSelection.Api.Constants
         //IdList Routes
 
         public const string PrizeCategorySpecification = "PrizeCategorySpecification/{prizeCategoryName}/{probabilityExtentForEntireCategory}";
+        public const string PrizeCategorySpecificationNoNames = "PrizeCategorySpecificationNoNames/{prizeCategoryName}/{probabilityExtentForEntireCategory}/{prizesInPrizeCategoryCount}";
 
         public const string PrizeSelectionTable = "PrizeSelectionTable"; //POST IList<PrizeCategorySpecification>
 
-        public const string GetSelectPrizesSingle = "PrizeResults";
-        public const string GetSelectPrizesMulti = "PrizeResults/{selectionCount}";
+        public const string SelectPrizesSingle = "PrizeResults";
+        public const string SelectPrizesMulti = "PrizeResults/{selectionCount}";
 
-        //public const string PrizeSelectionTable = ""; //POST IList<PrizeCategorySpecification>
+        public const string SuccessChance = "SuccessChance";
 
+        //GetChanceToMeetSuccessCriteriaForFixedSelectionCount
     }
 }

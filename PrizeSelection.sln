@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrizeSelection.Model", "PrizeSelection.Model\PrizeSelection.Model.csproj", "{5AEB74BF-E10B-48E6-A5C6-68AB232C1B3B}"
 EndProject
@@ -9,13 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrizeSelection.Logic", "Pri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrizeSelection.Test", "PrizeSelection.Test\PrizeSelection.Test.csproj", "{5E931BF6-CE6A-4010-BD71-4DF3EA2C8CDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrizeSelection.Api", "PrizeSelection.Api\PrizeSelection.Api.csproj", "{1E56D807-AD87-4FEF-B819-0F2631160986}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrizeSelection.Api", "PrizeSelection.Api\PrizeSelection.Api.csproj", "{1E56D807-AD87-4FEF-B819-0F2631160986}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dto.Api", "Dto.Api\Dto.Api.csproj", "{967A38DE-058F-4A4A-ACB8-55877AD5CFA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dto.Api", "Dto.Api\Dto.Api.csproj", "{967A38DE-058F-4A4A-ACB8-55877AD5CFA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic.Api", "Logic.Api\Logic.Api.csproj", "{96B9BB33-FB1E-4870-8A6E-CBCCC1706B41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic.Api", "Logic.Api\Logic.Api.csproj", "{96B9BB33-FB1E-4870-8A6E-CBCCC1706B41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Options.PrizeSelection", "Infra.Options.PrizeSelection\Infra.Options.PrizeSelection.csproj", "{4E351E4A-AB44-4678-B2B0-2D081CE819B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Options.PrizeSelection", "Infra.Options.PrizeSelection\Infra.Options.PrizeSelection.csproj", "{4E351E4A-AB44-4678-B2B0-2D081CE819B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrizeSelection.IntegrationTest", "PrizeSelection.IntegrationTest\PrizeSelection.IntegrationTest.csproj", "{7B8C07FE-F1F3-4498-9A17-A62B100F8C35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{4E351E4A-AB44-4678-B2B0-2D081CE819B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E351E4A-AB44-4678-B2B0-2D081CE819B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E351E4A-AB44-4678-B2B0-2D081CE819B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B8C07FE-F1F3-4498-9A17-A62B100F8C35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B8C07FE-F1F3-4498-9A17-A62B100F8C35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B8C07FE-F1F3-4498-9A17-A62B100F8C35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B8C07FE-F1F3-4498-9A17-A62B100F8C35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

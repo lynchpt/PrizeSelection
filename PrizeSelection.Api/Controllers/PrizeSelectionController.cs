@@ -16,8 +16,14 @@ namespace PrizeSelection.Api.Controllers
 {
     public interface IPrizeSelectionController
     {
+        IActionResult GetPrizeCategorySpecification(string prizeCategoryName, double probabilityExtentForEntireCategory, IList<string> prizeNames);
+        IActionResult GetPrizeCategorySpecificationNoNames(string prizeCategoryName, double probabilityExtentForEntireCategory, int prizesInPrizeCategoryCount);
+        IActionResult GetPrizeSelectionTable(IList<D.PrizeCategorySpecification> prizeCategorySpecifications);
+
         IActionResult GetPrizeSelectionSingle(IList<D.SelectionDomain> selectionDomains);
         IActionResult GetPrizeSelectionMulti(IList<D.SelectionDomain> selectionDomains, int selectionCount);
+
+        IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount(D.SuccessChanceInput successChanceInput);
     }
 
     [Produces(RouteConstants.ContentType_ApplicationJson)]
@@ -31,15 +37,17 @@ namespace PrizeSelection.Api.Controllers
         private readonly ILogger<PrizeSelectionController> _logger;
         private readonly IPrizeSelectionTableHelper _prizeSelectionTableHelper;
         private readonly ISelectionEngine _selectionEngine;
+        private readonly ISelectionSuccessCalculator _selectionSuccessCalculator;
         #endregion
 
         #region Constructors
 
         public PrizeSelectionController(IPrizeSelectionTableHelper prizeSelectionTableHelper, ISelectionEngine selectionEngine,
-            IMapper mapper, ILogger<PrizeSelectionController> logger)
+            ISelectionSuccessCalculator selectionSuccessCalculator, IMapper mapper, ILogger<PrizeSelectionController> logger)
         {
             _prizeSelectionTableHelper = prizeSelectionTableHelper;
             _selectionEngine = selectionEngine;
+            _selectionSuccessCalculator = selectionSuccessCalculator;
             _mapper = mapper;
             _logger = logger;
         }
@@ -68,6 +76,26 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(prizeCategorySpecifications);
         }
 
+        [HttpGet]
+        [Route(RouteConstants.PrizeCategorySpecificationNoNames)]
+        [SwaggerOperation(nameof(GetPrizeCategorySpecificationNoNames))]
+        [ProducesResponseType(typeof(IEnumerable<D.PrizeCategorySpecification>), (int)HttpStatusCode.OK)]
+        public IActionResult GetPrizeCategorySpecificationNoNames(string prizeCategoryName, double probabilityExtentForEntireCategory,
+            int prizesInPrizeCategoryCount)
+        {
+            IList<PrizeCategorySpecification> prizeCategorySpecifications = new List<PrizeCategorySpecification>();
+
+            if (prizesInPrizeCategoryCount > 0)
+            {
+                PrizeCategorySpecification spec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                    prizeCategoryName, probabilityExtentForEntireCategory, prizesInPrizeCategoryCount);
+
+                prizeCategorySpecifications = new List<PrizeCategorySpecification>() { spec };
+            }
+
+            return new ObjectResult(prizeCategorySpecifications);
+        }
+
         [HttpPost]
         [Route(RouteConstants.PrizeSelectionTable)]
         [SwaggerOperation(nameof(GetPrizeSelectionTable))]
@@ -87,7 +115,7 @@ namespace PrizeSelection.Api.Controllers
         }
 
         [HttpPost]
-        [Route(RouteConstants.GetSelectPrizesSingle)]
+        [Route(RouteConstants.SelectPrizesSingle)]
         [SwaggerOperation(nameof(GetPrizeSelectionSingle))]
         [ProducesResponseType(typeof(IEnumerable<D.PrizeResultRow>), (int)HttpStatusCode.OK)]
         public IActionResult GetPrizeSelectionSingle([FromBody]IList<D.SelectionDomain> selectionDomains)
@@ -108,7 +136,7 @@ namespace PrizeSelection.Api.Controllers
         }
 
         [HttpPost]
-        [Route(RouteConstants.GetSelectPrizesMulti)]
+        [Route(RouteConstants.SelectPrizesMulti)]
         [SwaggerOperation(nameof(GetPrizeSelectionMulti))]
         [ProducesResponseType(typeof(IEnumerable<D.PrizeResultRow>), (int)HttpStatusCode.OK)]
         public IActionResult GetPrizeSelectionMulti([FromBody]IList<D.SelectionDomain> selectionDomains, int selectionCount)
@@ -117,7 +145,6 @@ namespace PrizeSelection.Api.Controllers
 
             if (selectionDomains != null && selectionDomains.Any())
             {
-
                 IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(selectionDomains);
 
                 prizeResultsTable = _selectionEngine.SelectPrizes(selectionDomainModels, selectionCount);
@@ -125,6 +152,28 @@ namespace PrizeSelection.Api.Controllers
 
             return new ObjectResult(prizeResultsTable);
         }
+
+        [HttpPost]
+        [Route(RouteConstants.SuccessChance)]
+        [SwaggerOperation(nameof(GetChanceToMeetSuccessCriteriaForFixedSelectionCount))]
+        [ProducesResponseType(typeof(double), (int)HttpStatusCode.OK)]
+        public IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount([FromBody]D.SuccessChanceInput successChanceInput)
+        {
+            double successChance = 0;
+
+            if (successChanceInput.SuccessCriteria != null && successChanceInput.SuccessCriteria.Any() &&
+                successChanceInput.SelectionDomains != null && successChanceInput.SelectionDomains.Any() &&
+                successChanceInput.SelectionCount > 0)
+            {
+                IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successChanceInput.SelectionDomains);
+
+                successChance = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaForFixedSelectionCount(
+                    successChanceInput.SuccessCriteria, selectionDomainModels, successChanceInput.SelectionCount);
+            }
+
+            return new ObjectResult(successChance);
+        }
+
         #endregion
     }
 }

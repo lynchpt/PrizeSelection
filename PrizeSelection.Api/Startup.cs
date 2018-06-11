@@ -107,6 +107,7 @@ namespace PrizeSelection.Api
             services.AddScoped<IPrizeSelectionTableHelper, PrizeSelectionTableHelper>();
             services.AddScoped<IPrizeResultsTableHelper, PrizeResultsTableHelper>();
             services.AddScoped<ISelectionEngine, SelectionEngine>();
+            services.AddScoped<ISelectionSuccessCalculator, SelectionSuccessCalculator>();
 
             services.AddSingleton<IMapper>(ConfigureMappings);
         }
