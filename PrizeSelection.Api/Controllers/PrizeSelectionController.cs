@@ -23,7 +23,9 @@ namespace PrizeSelection.Api.Controllers
         IActionResult GetPrizeSelectionSingle(IList<D.SelectionDomain> selectionDomains);
         IActionResult GetPrizeSelectionMulti(IList<D.SelectionDomain> selectionDomains, int selectionCount);
 
-        IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount(D.SuccessChanceInput successChanceInput);
+        IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount(D.SuccessCalculationInput successCalculationInput);
+
+        IActionResult GetResultsForPullsUntilSuccess(D.SuccessCalculationInput successCalculationInput);
     }
 
     [Produces(RouteConstants.ContentType_ApplicationJson)]
@@ -63,14 +65,16 @@ namespace PrizeSelection.Api.Controllers
         public IActionResult GetPrizeCategorySpecification(string prizeCategoryName, double probabilityExtentForEntireCategory,
             [FromBody]IList<string> prizeNames)
         {
-            IList<PrizeCategorySpecification> prizeCategorySpecifications = new List<PrizeCategorySpecification>();
+            IList<D.PrizeCategorySpecification> prizeCategorySpecifications = new List<D.PrizeCategorySpecification>();
 
             if (prizeNames != null && prizeNames.Any())
             {
                 PrizeCategorySpecification spec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
                     prizeCategoryName, probabilityExtentForEntireCategory, prizeNames);
 
-                prizeCategorySpecifications = new List<PrizeCategorySpecification>(){ spec };
+                IList<PrizeCategorySpecification> prizeCategorySpecificationsModel = new List<PrizeCategorySpecification>(){ spec };
+
+                prizeCategorySpecifications = _mapper.Map<IList<D.PrizeCategorySpecification>>(prizeCategorySpecificationsModel);
             }
 
             return new ObjectResult(prizeCategorySpecifications);
@@ -83,14 +87,16 @@ namespace PrizeSelection.Api.Controllers
         public IActionResult GetPrizeCategorySpecificationNoNames(string prizeCategoryName, double probabilityExtentForEntireCategory,
             int prizesInPrizeCategoryCount)
         {
-            IList<PrizeCategorySpecification> prizeCategorySpecifications = new List<PrizeCategorySpecification>();
+            IList<D.PrizeCategorySpecification> prizeCategorySpecifications = new List<D.PrizeCategorySpecification>();
 
             if (prizesInPrizeCategoryCount > 0)
             {
                 PrizeCategorySpecification spec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
                     prizeCategoryName, probabilityExtentForEntireCategory, prizesInPrizeCategoryCount);
 
-                prizeCategorySpecifications = new List<PrizeCategorySpecification>() { spec };
+                IList<PrizeCategorySpecification> prizeCategorySpecificationsModel = new List<PrizeCategorySpecification>() { spec };
+
+                prizeCategorySpecifications = _mapper.Map<IList<D.PrizeCategorySpecification>>(prizeCategorySpecificationsModel);
             }
 
             return new ObjectResult(prizeCategorySpecifications);
@@ -102,13 +108,15 @@ namespace PrizeSelection.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<D.PrizeSelectionRow>), (int)HttpStatusCode.OK)]
         public IActionResult GetPrizeSelectionTable([FromBody]IList<D.PrizeCategorySpecification> prizeCategorySpecifications)
         {
-            IList<PrizeSelectionRow> prizeSelectionTable = new List<PrizeSelectionRow>();
+            IList<D.PrizeSelectionRow> prizeSelectionTable = new List<D.PrizeSelectionRow>();
 
             if (prizeCategorySpecifications != null && prizeCategorySpecifications.Any())
             {
                 IList<PrizeCategorySpecification> model = _mapper.Map<IList<PrizeCategorySpecification>>(prizeCategorySpecifications);
 
-                prizeSelectionTable = _prizeSelectionTableHelper.GetPrizeSelectionTable(model);
+                IList<PrizeSelectionRow> prizeSelectionTableModel = _prizeSelectionTableHelper.GetPrizeSelectionTable(model);
+
+                prizeSelectionTable = _mapper.Map<IList<D.PrizeSelectionRow>>(prizeSelectionTableModel);
             }
 
             return new ObjectResult(prizeSelectionTable);
@@ -120,7 +128,7 @@ namespace PrizeSelection.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<D.PrizeResultRow>), (int)HttpStatusCode.OK)]
         public IActionResult GetPrizeSelectionSingle([FromBody]IList<D.SelectionDomain> selectionDomains)
         {
-            IList<PrizeResultRow> prizeResultsTable = new List<PrizeResultRow>();
+            IList<D.PrizeResultRow> prizeResultsTable = new List<D.PrizeResultRow>();
 
             if (selectionDomains != null && selectionDomains.Any())
             {
@@ -129,7 +137,9 @@ namespace PrizeSelection.Api.Controllers
 
                 IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(selectionDomains);
 
-                prizeResultsTable = _selectionEngine.SelectPrizes(selectionDomainModels, selectionCount);
+                IList<PrizeResultRow> prizeResultsTableModel = _selectionEngine.SelectPrizes(selectionDomainModels, selectionCount);
+
+                prizeResultsTable = _mapper.Map<IList<D.PrizeResultRow>>(prizeResultsTableModel);
             }
 
             return new ObjectResult(prizeResultsTable);
@@ -141,13 +151,15 @@ namespace PrizeSelection.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<D.PrizeResultRow>), (int)HttpStatusCode.OK)]
         public IActionResult GetPrizeSelectionMulti([FromBody]IList<D.SelectionDomain> selectionDomains, int selectionCount)
         {
-            IList<PrizeResultRow> prizeResultsTable = new List<PrizeResultRow>();
+            IList<D.PrizeResultRow> prizeResultsTable = new List<D.PrizeResultRow>();
 
             if (selectionDomains != null && selectionDomains.Any())
             {
                 IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(selectionDomains);
 
-                prizeResultsTable = _selectionEngine.SelectPrizes(selectionDomainModels, selectionCount);
+                IList<PrizeResultRow> prizeResultsTableModel = _selectionEngine.SelectPrizes(selectionDomainModels, selectionCount);
+
+                prizeResultsTable = _mapper.Map<IList<D.PrizeResultRow>>(prizeResultsTableModel);
             }
 
             return new ObjectResult(prizeResultsTable);
@@ -157,23 +169,43 @@ namespace PrizeSelection.Api.Controllers
         [Route(RouteConstants.SuccessChance)]
         [SwaggerOperation(nameof(GetChanceToMeetSuccessCriteriaForFixedSelectionCount))]
         [ProducesResponseType(typeof(double), (int)HttpStatusCode.OK)]
-        public IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount([FromBody]D.SuccessChanceInput successChanceInput)
+        public IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount([FromBody]D.SuccessCalculationInput successCalculationInput)
         {
             double successChance = 0;
 
-            if (successChanceInput.SuccessCriteria != null && successChanceInput.SuccessCriteria.Any() &&
-                successChanceInput.SelectionDomains != null && successChanceInput.SelectionDomains.Any() &&
-                successChanceInput.SelectionCount > 0)
+            if (successCalculationInput.SuccessCriteria != null && successCalculationInput.SuccessCriteria.Any() &&
+                successCalculationInput.SelectionDomains != null && successCalculationInput.SelectionDomains.Any() &&
+                successCalculationInput.SelectionCount > 0)
             {
-                IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successChanceInput.SelectionDomains);
+                IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successCalculationInput.SelectionDomains);
 
                 successChance = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaForFixedSelectionCount(
-                    successChanceInput.SuccessCriteria, selectionDomainModels, successChanceInput.SelectionCount);
+                    successCalculationInput.SuccessCriteria, selectionDomainModels, successCalculationInput.SelectionCount);
             }
 
             return new ObjectResult(successChance);
         }
 
+        [HttpPost]
+        [Route(RouteConstants.SelectionsUntilSuccess)]
+        [SwaggerOperation(nameof(GetResultsForPullsUntilSuccess))]
+        [ProducesResponseType(typeof(D.PrizeSelectionsForSuccessInfo), (int)HttpStatusCode.OK)]
+        public IActionResult GetResultsForPullsUntilSuccess([FromBody]D.SuccessCalculationInput successCalculationInput)
+        {
+            D.PrizeSelectionsForSuccessInfo result = new D.PrizeSelectionsForSuccessInfo();
+
+            if (successCalculationInput.SuccessCriteria != null && successCalculationInput.SuccessCriteria.Any() &&
+                successCalculationInput.SelectionDomains != null && successCalculationInput.SelectionDomains.Any())
+            {
+                IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successCalculationInput.SelectionDomains);
+
+                PrizeSelectionsForSuccessInfo successModel = _selectionSuccessCalculator.GetResultsForPullsUntilSuccess(successCalculationInput.SuccessCriteria, selectionDomainModels);
+
+                result = _mapper.Map<D.PrizeSelectionsForSuccessInfo>(successModel);
+            }
+
+            return new ObjectResult(result);
+        }
         #endregion
     }
 }

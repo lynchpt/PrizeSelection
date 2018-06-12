@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PrizeSelection.Dto.Api
 {
-    public class SuccessChanceInput
+    public class SuccessCalculationInput
     {
         public IDictionary<int, int> SuccessCriteria { get; set; }
         public IList<SelectionDomain> SelectionDomains { get; set; }
