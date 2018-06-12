@@ -24,8 +24,10 @@ namespace PrizeSelection.Api.Controllers
         IActionResult GetPrizeSelectionMulti(IList<D.SelectionDomain> selectionDomains, int selectionCount);
 
         IActionResult GetChanceToMeetSuccessCriteriaForFixedSelectionCount(D.SuccessCalculationInput successCalculationInput);
+        IActionResult GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount(D.SuccessCalculationInput successCalculationInput);
 
         IActionResult GetResultsForPullsUntilSuccess(D.SuccessCalculationInput successCalculationInput);
+        IActionResult GetResultsForPullsUntilSuccessSubset(D.SuccessCalculationInput successCalculationInput);
     }
 
     [Produces(RouteConstants.ContentType_ApplicationJson)]
@@ -187,6 +189,28 @@ namespace PrizeSelection.Api.Controllers
         }
 
         [HttpPost]
+        [Route(RouteConstants.SuccessChanceSubset)]
+        [SwaggerOperation(nameof(GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount))]
+        [ProducesResponseType(typeof(double), (int)HttpStatusCode.OK)]
+        public IActionResult GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount([FromBody]D.SuccessCalculationInput successCalculationInput)
+        {
+            double successChance = 0;
+
+            if (successCalculationInput.SuccessCriteria != null && successCalculationInput.SuccessCriteria.Any() &&
+                successCalculationInput.SelectionDomains != null && successCalculationInput.SelectionDomains.Any() &&
+                successCalculationInput.SelectionCount > 0 && successCalculationInput.SubsetSize.HasValue)
+            {
+                IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successCalculationInput.SelectionDomains);
+
+                successChance = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount(
+                    successCalculationInput.SuccessCriteria, selectionDomainModels, successCalculationInput.SelectionCount, successCalculationInput.SubsetSize.Value);
+            }
+
+            return new ObjectResult(successChance);
+        }
+
+
+        [HttpPost]
         [Route(RouteConstants.SelectionsUntilSuccess)]
         [SwaggerOperation(nameof(GetResultsForPullsUntilSuccess))]
         [ProducesResponseType(typeof(D.PrizeSelectionsForSuccessInfo), (int)HttpStatusCode.OK)]
@@ -200,6 +224,29 @@ namespace PrizeSelection.Api.Controllers
                 IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successCalculationInput.SelectionDomains);
 
                 PrizeSelectionsForSuccessInfo successModel = _selectionSuccessCalculator.GetResultsForPullsUntilSuccess(successCalculationInput.SuccessCriteria, selectionDomainModels);
+
+                result = _mapper.Map<D.PrizeSelectionsForSuccessInfo>(successModel);
+            }
+
+            return new ObjectResult(result);
+        }
+
+        [HttpPost]
+        [Route(RouteConstants.SelectionsUntilSuccessSubset)]
+        [SwaggerOperation(nameof(GetResultsForPullsUntilSuccessSubset))]
+        [ProducesResponseType(typeof(D.PrizeSelectionsForSuccessInfo), (int)HttpStatusCode.OK)]
+        public IActionResult GetResultsForPullsUntilSuccessSubset([FromBody]D.SuccessCalculationInput successCalculationInput)
+        {
+            D.PrizeSelectionsForSuccessInfo result = new D.PrizeSelectionsForSuccessInfo();
+
+            if (successCalculationInput.SuccessCriteria != null && successCalculationInput.SuccessCriteria.Any() &&
+                successCalculationInput.SelectionDomains != null && successCalculationInput.SelectionDomains.Any() &&
+                successCalculationInput.SubsetSize.HasValue)
+            {
+                IList<SelectionDomain> selectionDomainModels = _mapper.Map<IList<SelectionDomain>>(successCalculationInput.SelectionDomains);
+
+                PrizeSelectionsForSuccessInfo successModel = _selectionSuccessCalculator.GetResultsForPullsUntilSuccessSubset(
+                    successCalculationInput.SuccessCriteria, selectionDomainModels, successCalculationInput.SubsetSize.Value);
 
                 result = _mapper.Map<D.PrizeSelectionsForSuccessInfo>(successModel);
             }

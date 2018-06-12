@@ -22,7 +22,10 @@ namespace PrizeSelection.Api.Constants
         public const string SelectPrizesMulti = "PrizeResults/{selectionCount}";
 
         public const string SuccessChance = "SuccessChance";
+        public const string SuccessChanceSubset = "SuccessChanceSubset";
+
         public const string SelectionsUntilSuccess = "SelectionsUntilSuccess";
+        public const string SelectionsUntilSuccessSubset = "SelectionsUntilSuccessSubset";
 
         //GetChanceToMeetSuccessCriteriaForFixedSelectionCount
     }

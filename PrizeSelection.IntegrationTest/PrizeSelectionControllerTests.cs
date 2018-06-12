@@ -233,6 +233,48 @@ namespace PrizeSelection.IntegrationTest
         }
 
         [TestMethod]
+        public void ExecuteSuccessChanceSubset_Guaranteed_WithName_Success()
+        {
+            int selectionCount = 8;
+            int prizesSought = 3;
+            int subsetSize = 2;
+
+            // get json for any needed post data
+            //success criteria
+            int prizeCountOnBanner = 16; //16 prizes on banner,including of banner entries
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+            //selection domains
+            IList<SelectionDomain> selectionDomainModels = GetSelectionDomains_FFRK_Detailed_WithNames();
+            IList<D.SelectionDomain> selectionDomains = _mapper.Map<IList<D.SelectionDomain>>(selectionDomainModels);
+
+            SuccessCalculationInput input = new SuccessCalculationInput()
+                { SelectionCount = selectionCount, SelectionDomains = selectionDomains, SuccessCriteria = successCriteria, SubsetSize = subsetSize };
+            string serializedInput = JsonConvert.SerializeObject(input);
+
+            //set up post content
+            HttpContent content = new StringContent(serializedInput);
+            content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
+
+            //call actual api
+            var httpResponse = _testServerFixture.Client.PostAsync($"{BasePath}SuccessChanceSubset/", content).Result;
+
+            //retrieve and deserialize api response data to object.
+            string resultString = httpResponse.Content.ReadAsStringAsync().Result;
+            double successChance = JsonConvert.DeserializeObject<double>(resultString);
+
+            //Assertions
+            Assert.AreNotEqual(0, successChance);
+
+            //write data to console for spot checking
+            Console.WriteLine($"Success Chance: {successChance}");
+
+        }
+
+        [TestMethod]
         public void ExecutePullsUntilSuccess_Guaranteed_WithName_Success()
         {
             int prizesSought = 3;
@@ -258,6 +300,46 @@ namespace PrizeSelection.IntegrationTest
 
             //call actual api
             var httpResponse = _testServerFixture.Client.PostAsync($"{BasePath}SelectionsUntilSuccess/", content).Result;
+
+            //retrieve and deserialize api response data to object.
+            string resultString = httpResponse.Content.ReadAsStringAsync().Result;
+            D.PrizeSelectionsForSuccessInfo successInfo = JsonConvert.DeserializeObject<D.PrizeSelectionsForSuccessInfo>(resultString);
+
+            //Assertions
+            Assert.IsNotNull(successInfo);
+
+            //write data to console for spot checking
+            Console.WriteLine(successInfo.ToString());
+
+        }
+
+        [TestMethod]
+        public void ExecutePullsUntilSuccessSubset_Guaranteed_WithName_Success()
+        {
+            int prizesSought = 3;
+            int subsetSize = 2;
+
+            // get json for any needed post data
+            //success criteria
+            int prizeCountOnBanner = 16; //16 prizes on banner,including of banner entries
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+            //selection domains
+            IList<SelectionDomain> selectionDomainModels = GetSelectionDomains_FFRK_Detailed_WithNames();
+            IList<D.SelectionDomain> selectionDomains = _mapper.Map<IList<D.SelectionDomain>>(selectionDomainModels);
+
+            SuccessCalculationInput input = new SuccessCalculationInput() { SelectionDomains = selectionDomains, SuccessCriteria = successCriteria, SubsetSize = subsetSize };
+            string serializedInput = JsonConvert.SerializeObject(input);
+
+            //set up post content
+            HttpContent content = new StringContent(serializedInput);
+            content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
+
+            //call actual api
+            var httpResponse = _testServerFixture.Client.PostAsync($"{BasePath}SelectionsUntilSuccessSubset/", content).Result;
 
             //retrieve and deserialize api response data to object.
             string resultString = httpResponse.Content.ReadAsStringAsync().Result;

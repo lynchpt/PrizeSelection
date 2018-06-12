@@ -889,6 +889,64 @@ namespace PrizeSelection.Test
         }
 
         [DataTestMethod]
+        [DataRow(2, 4, 1)]
+        [DataRow(3, 4, 2)]
+        [DataRow(4, 4, 2)]
+        [DataRow(2, 6, 1)]
+        [DataRow(3, 6, 2)]
+        [DataRow(4, 6, 2)]
+        public void GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount_FFRK_Detailed_Success(int prizesSought, int selectionCount, int subsetSize)
+        {
+            //success criteria
+            int prizeCountOnBanner = 16; //16 prizes on banner
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+
+            //selectionDomains
+            IList<PrizeCategorySpecification> specsFFRKDetailedGuaranteedWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Guaranteed_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedGuaranteedWithoutNames);
+
+            IList<PrizeCategorySpecification> specsFFRKDetailedVariableWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedVariableWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedVariableWithoutNames);
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedVariableWithoutNames
+                                                          }
+
+                                                      };
+
+            double results = _selectionSuccessCalculator.GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount(
+                successCriteria, selectionDomains, selectionCount, subsetSize);
+
+            Assert.AreNotEqual(0, results);
+
+            Console.WriteLine($"Chance for {selectionCount} prize selections to meet success criteria: {results}");
+        }
+
+
+        [DataTestMethod]
         [DataRow(1)]
         [DataRow(2)]
         [DataRow(3)]
@@ -999,6 +1057,61 @@ namespace PrizeSelection.Test
                                                       };
 
             PrizeSelectionsForSuccessInfo results = _selectionSuccessCalculator.GetResultsForPullsUntilSuccess(successCriteria, selectionDomains);
+
+            Assert.IsNotNull(results);
+
+            Console.WriteLine(results.ToString());
+        }
+
+        [DataTestMethod]
+        [DataRow(3, 1)]
+        [DataRow(3, 2)]
+        [DataRow(4, 2)]
+        [DataRow(4, 3)]
+        public void GetResultsForPullsUntilSuccessSubset_Detailed_Success(int prizesSought, int subsetSize)
+        {
+            //success criteria
+            int prizeCountOnBanner = 16; //16 prizes on banner
+            IDictionary<int, int> successCriteria = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeCountOnBanner);
+
+            for (int i = 1; i <= prizesSought; i++)
+            {
+                successCriteria[i] = 1;
+            }
+
+            //selectionDomains
+
+            IList<PrizeCategorySpecification> specsFFRKDetailedGuaranteedWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Guaranteed_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedGuaranteedWithoutNames);
+
+            IList<PrizeCategorySpecification> specsFFRKDetailedVariableWithoutNames =
+                GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithoutName();
+
+            IList<PrizeSelectionRow> prizeSelectionRowsFFRKDetailedVariableWithoutNames =
+                _prizeSelectionTableHelper.GetPrizeSelectionTable(specsFFRKDetailedVariableWithoutNames);
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedGuaranteedWithoutNames
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = prizeSelectionRowsFFRKDetailedVariableWithoutNames
+                                                          }
+
+                                                      };
+
+            PrizeSelectionsForSuccessInfo results = _selectionSuccessCalculator.GetResultsForPullsUntilSuccessSubset(successCriteria, selectionDomains, subsetSize);
 
             Assert.IsNotNull(results);
 

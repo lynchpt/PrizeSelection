@@ -9,5 +9,6 @@ namespace PrizeSelection.Dto.Api
         public IDictionary<int, int> SuccessCriteria { get; set; }
         public IList<SelectionDomain> SelectionDomains { get; set; }
         public int SelectionCount { get; set; }
+        public int? SubsetSize { get; set; }
     }
 }
