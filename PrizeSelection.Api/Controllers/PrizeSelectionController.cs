@@ -124,6 +124,21 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(prizeSelectionTable);
         }
 
+        /// <summary>
+        /// Gets one Ability by its unique id
+        /// </summary>
+        /// <remarks>
+        /// Sample Use Case - You want to find out data about the Ability called "Firaja"
+        /// - You first call /api/v1.0/IdLists/Ability to get the proper IdList
+        /// - Then you look up the integer Key associated with the Value of "Firaja" in the IdList (the id is 4 in this case)
+        /// - Finally you call this api: api/v1.0/Abilities/4
+        /// <br /> 
+        /// Example - http://ffrkapi.azurewebsites.net/api/v1.0/Abilities/4 (or use Try It Out to see data in this page)
+        /// </remarks>
+        /// <param name="abilityId">the integer id for the desired Ability; it can be found in the Ability IdList</param>
+        /// <response code="200">
+        ///     <see>IEnumerable&lt;Ability&gt;</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.SelectPrizesSingle)]
         [SwaggerOperation(nameof(GetPrizeSelectionSingle))]
