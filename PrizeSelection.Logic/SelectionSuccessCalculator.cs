@@ -52,7 +52,7 @@ namespace PrizeSelection.Logic
         public double GetChanceToMeetSuccessCriteriaForFixedSelectionCount(IDictionary<int, int> successCriteria, IList<SelectionDomain> selectionDomains, 
             int selectionCount,  Random random = null)
         {
-            double trials = 10000; //harcoded so user can't DOS
+            double trials = 1000; //harcoded so user can't DOS
             int successes = 0;
 
             if (random == null)

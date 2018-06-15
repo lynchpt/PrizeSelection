@@ -59,7 +59,21 @@ namespace PrizeSelection.Api.Controllers
 
 
         #region IPrizeSelectionController Implementation
-
+        /// <summary>
+        /// Gets one Ability by its unique id
+        /// </summary>
+        /// <remarks>
+        /// Sample Use Case - You want to find out data about the Ability called "Firaja"
+        /// - You first call /api/v1.0/IdLists/Ability to get the proper IdList
+        /// - Then you look up the integer Key associated with the Value of "Firaja" in the IdList (the id is 4 in this case)
+        /// - Finally you call this api: api/v1.0/Abilities/4
+        /// <br /> 
+        /// Example - http://ffrkapi.azurewebsites.net/api/v1.0/Abilities/4 (or use Try It Out to see data in this page)
+        /// </remarks>
+        /// <param name="abilityId">the integer id for the desired Ability; it can be found in the Ability IdList</param>
+        /// <response code="200">
+        ///     <see>IEnumerable&lt;Ability&gt;</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.PrizeCategorySpecification)]
         [SwaggerOperation(nameof(GetPrizeCategorySpecification))]
@@ -107,7 +121,7 @@ namespace PrizeSelection.Api.Controllers
         [HttpPost]
         [Route(RouteConstants.PrizeSelectionTable)]
         [SwaggerOperation(nameof(GetPrizeSelectionTable))]
-        [ProducesResponseType(typeof(IEnumerable<D.PrizeSelectionRow>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IList<D.PrizeSelectionRow>), (int)HttpStatusCode.OK)]
         public IActionResult GetPrizeSelectionTable([FromBody]IList<D.PrizeCategorySpecification> prizeCategorySpecifications)
         {
             IList<D.PrizeSelectionRow> prizeSelectionTable = new List<D.PrizeSelectionRow>();
@@ -125,19 +139,37 @@ namespace PrizeSelection.Api.Controllers
         }
 
         /// <summary>
-        /// Gets one Ability by its unique id
+        /// Performs one Prize Selection operation against the provided SelectionDomains, which specify how many prizes are selected and 
+        /// what rates each individual prize has of being selected from the provided PrizeSelectionTables.
+        /// 
         /// </summary>
         /// <remarks>
-        /// Sample Use Case - You want to find out data about the Ability called "Firaja"
-        /// - You first call /api/v1.0/IdLists/Ability to get the proper IdList
-        /// - Then you look up the integer Key associated with the Value of "Firaja" in the IdList (the id is 4 in this case)
-        /// - Finally you call this api: api/v1.0/Abilities/4
+        /// Each provided SelectionDomain represents one stage of an overall Prize Selection operation; in many simple cases, only one 
+        /// SelectionDomain should be provided. An example of this would be a simple lottery where one person (which would count as a 
+        /// Prize in this scenario) has bought 11 tickets, while 9 other people each bought one. One SelectionDomain would be passed in, and it
+        /// would specify how many prizes to select (one) and each Prize's (each person's) chance of being selected via the PrizeSelectionTable 
+        /// object. A PrizeSelectionTable is basically a probability table with some extra metadata included; in our simple scenario, 
+        /// the person Prize would have a 55% chance of being selected, and each other person would have a 5% chance.
         /// <br /> 
-        /// Example - http://ffrkapi.azurewebsites.net/api/v1.0/Abilities/4 (or use Try It Out to see data in this page)
+        /// From above, you see that different Prizes in one PrizeSelectionTable (which is contained by a SelectionDomain) can have different 
+        /// probabilities of being selected. In cases where you want the same Prize to have two different probabilities for selection in 
+        /// different stages of the overall Prize Selection operation, you will need multiple SelectionDomains. Let's consider an example.
+        /// <br /> 
+        /// If you wanted to model one guaranteed selection of one Prize out of a group of ten possible Prizes (always getting one Prize 
+        /// in this selection stage), but then to also have five more selections made against the same set of ten possible Prizes where 
+        /// this time each has only a 1% chance of being picked (i.e. on average, 90% of each of these five selections will pick no 
+        /// Prize at all), you would need to use two SelectionDomains. The first would specify one selection against a PrizeSelectionTable 
+        /// where each Prize had a 10% chance of being picked, and five selections against a PrizeSelectionTable where each Prize 
+        /// had a 1% chance of being picked.
+        /// <br /> 
+        /// In all cases, the returned result is a set of PrizeResultRows, which functions as a table telling you for each possible prize 
+        /// how many of them you picked in the Prize Selection operation. Note that any prize you specified in the SelectionDomain will 
+        /// show up in the PrizeResultRow set, even if no instances of that Prize was selected.
+        /// 
         /// </remarks>
-        /// <param name="abilityId">the integer id for the desired Ability; it can be found in the Ability IdList</param>
+        /// <param name="selectionDomains">the specification objects for how to conduct the Prize Selection operation</param>
         /// <response code="200">
-        ///     <see>IEnumerable&lt;Ability&gt;</see>
+        ///     <see>IList&lt;PrizeResultRow&gt;</see>
         /// </response>
         [HttpPost]
         [Route(RouteConstants.SelectPrizesSingle)]
@@ -162,6 +194,40 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(prizeResultsTable);
         }
 
+        /// <summary>
+        /// Performs one Prize Selection operation against the provided SelectionDomains, which specify how many prizes are selected and 
+        /// what rates each individual prize has of being selected from the provided PrizeSelectionTables.
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// Each provided SelectionDomain represents one stage of an overall Prize Selection operation; in many simple cases, only one 
+        /// SelectionDomain should be provided. An example of this would be a simple lottery where one person (which would count as a 
+        /// Prize in this scenario) has bought 11 tickets, while 9 other people each bought one. One SelectionDomain would be passed in, and it
+        /// would specify how many prizes to select (one) and each Prize's (each person's) chance of being selected via the PrizeSelectionTable 
+        /// object. A PrizeSelectionTable is basically a probability table with some extra metadata included; in our simple scenario, 
+        /// the person Prize would have a 55% chance of being selected, and each other person would have a 5% chance.
+        /// <br /> 
+        /// From above, you see that different Prizes in one PrizeSelectionTable (which is contained by a SelectionDomain) can have different 
+        /// probabilities of being selected. In cases where you want the same Prize to have two different probabilities for selection in 
+        /// different stages of the overall Prize Selection operation, you will need multiple SelectionDomains. Let's consider an example.
+        /// <br /> 
+        /// If you wanted to model one guaranteed selection of one Prize out of a group of ten possible Prizes (always getting one Prize 
+        /// in this selection stage), but then to also have five more selections made against the same set of ten possible Prizes where 
+        /// this time each has only a 1% chance of being picked (i.e. on average, 90% of each of these five selections will pick no 
+        /// Prize at all), you would need to use two SelectionDomains. The first would specify one selection against a PrizeSelectionTable 
+        /// where each Prize had a 10% chance of being picked, and five selections against a PrizeSelectionTable where each Prize 
+        /// had a 1% chance of being picked.
+        /// <br /> 
+        /// In all cases, the returned result is a set of PrizeResultRows, which functions as a table telling you for each possible prize 
+        /// how many of them you picked in the Prize Selection operation. Note that any prize you specified in the SelectionDomain will 
+        /// show up in the PrizeResultRow set, even if no instances of that Prize was selected.
+        /// 
+        /// </remarks>
+        /// <param name="selectionDomains">the specification objects for how to conduct the Prize Selection operation</param>
+        /// <param name="selectionCount">how many Prize Selection operations to perform</param>
+        /// <response code="200">
+        ///     <see>IList&lt;PrizeResultRow&gt;</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.SelectPrizesMulti)]
         [SwaggerOperation(nameof(GetPrizeSelectionMulti))]
@@ -182,6 +248,36 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(prizeResultsTable);
         }
 
+        /// <summary>
+        /// This method calculates what the chance is that: for the specified number of Prize Selection operations against the specified 
+        /// SelectionDomains (see the documentation for PrizeResults/{selectionCount} for details on SelectionDomains), the combined results 
+        /// of all selections will meet or exceed the SuccessCriteria you specify.
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// The SuccessCalculationInput you pass in is basically the same data you provide for PrizeResults/{selectionCount}, all bundled 
+        /// together in one parameter object that also includes the SuccessCriteria.
+        /// <br /> 
+        /// The SuccessCriteria is a simple "table" of Prize keys (the 1 based index of the Prize in the Prize Selection table) correlated 
+        /// to how many instances of each of those Prizes needs to be drawn within the specified number of Prize Selection operations for 
+        /// the entire set of selections to be considered a success by you. The SuccessCriteria needs to include every item that appears
+        /// in any of the PrizeSelectionTables in the SelectionDomains; if any of those Prizes are irrelevant to you, just set 0 
+        /// as the number of instances needed for success.
+        /// <br /> 
+        /// To give the best estimate of the success chance; the full set of Prize Selection operations will be simulated numerous times 
+        /// to smooth out randomness and give you the average chance.
+        /// <br /> 
+        /// The result is just a number representing the success chance, this method does not return the exact set of Prizes selected for 
+        /// any given set of Prize Selection operations or for all of them together.
+        ///
+        /// </remarks>
+        /// <param name="successCalculationInput">the required input object that contains the SelectionDomains making up each 
+        /// Prize Selection operation, how many Prize Selection operations to perform before checking for success, and the SuccessCriteria 
+        /// that are used to determine if the Prizes selected in any of the Prize Selection operations constitute success.
+        /// </param>
+        /// <response code="200">
+        ///     <see>double</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.SuccessChance)]
         [SwaggerOperation(nameof(GetChanceToMeetSuccessCriteriaForFixedSelectionCount))]
