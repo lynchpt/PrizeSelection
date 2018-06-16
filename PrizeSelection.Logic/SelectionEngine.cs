@@ -46,55 +46,91 @@ namespace PrizeSelection.Logic
             }
             #endregion
 
-            //Set up variables and structures
-
-            IList<PrizeResultRow> prizeResultTable = new List<PrizeResultRow>();
-
-
-            int prizeRowCount = selectionDomains.Max(sd => sd.PrizeSelectionTable.Count);
-            SelectionDomain largestSelectionDomain = selectionDomains.First(sd => sd.PrizeSelectionTable.Count == prizeRowCount);
-
-
-            //for intermediate use because we need to update the prize counts in a performant way.
-            IDictionary<int, int> resultsSummary = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(prizeRowCount);
+            //Set up variables and structures      
 
             if (random == null)
             {
                 random = new Random();
             }
 
+            IList<PrizeNameCategoryPair> uniquePrizeNames = GetUniquePrizeNameCategoryPairs(selectionDomains);
+
+            int finalPrizeRowCount = uniquePrizeNames.Count();
+
+            IList<PrizeResultRow> prizeResultTable = new List<PrizeResultRow>(finalPrizeRowCount);
+
+            List<IDictionary<int, int>> resultSummariesList = new List<IDictionary<int, int>>();
+
+
             //perform the actual selection and counting
-            foreach (var selectionDomain in selectionDomains)
+            for(int domainCounter = 0; domainCounter < selectionDomains.Count; domainCounter++)
             {
-                for (int counter = 0; counter < selectionDomain.PrizesToSelectFromDomainCount; counter++)
+                SelectionDomain currentSelectionDomain = selectionDomains[domainCounter];
+
+                //for intermediate use because we need to update the prize counts in a performant way.
+                IDictionary<int, int> resultsSummary = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(currentSelectionDomain.PrizeSelectionTable.Count);
+
+                for (int counter = 0; counter < currentSelectionDomain.PrizesToSelectFromDomainCount; counter++)
                 {
-                    PrizeSelectionRow selectedPrizeRow = SelectPrizeFromPrizeTable(selectionDomain.PrizeSelectionTable, random.NextDouble());
+                    PrizeSelectionRow selectedPrizeRow = SelectPrizeFromPrizeTable(currentSelectionDomain.PrizeSelectionTable, random.NextDouble());
 
                     if (selectedPrizeRow != null)
                     {
                         resultsSummary[selectedPrizeRow.PrizeIndex]++;
                     }
                 }
+
+                resultSummariesList.Add(resultsSummary);
             }
 
             //now that we have the counts of selected prizes by index, we need to translate them back to the more
             //informative structure of the prize results table
 
-            //generate table with all the data except counts
-            prizeResultTable = largestSelectionDomain.PrizeSelectionTable.Select(psr => 
+            //generate table with all the data except counts and indexes
+            prizeResultTable = uniquePrizeNames.Select(psr =>
                                     new PrizeResultRow()
                                     {
-                                        PrizeCategoryName = psr.PrizeCategoryName,
-                                        PrizeIndex = psr.PrizeIndex,
+                                        PrizeCategoryName = psr.CategoryName,
+                                        PrizeIndex = 0,
                                         PrizeName = psr.PrizeName,
                                         PrizeSelectedCount = 0
                                     }).ToList();
 
+            //put in indexes
+            for (int i = 0; i < finalPrizeRowCount; i++)
+            {
+                prizeResultTable[i].PrizeIndex = i + 1;
+            }
+
+            
+
             //now insert the counts; assumption is that the keys of the generated resultsSummary dictionary must match in number
             //and start at the same index (1), as the largestSelectionDomain which is used to prepopulate the prizeResultTable
-            foreach (var prizeResultRow in prizeResultTable)
+            for (int domainCounter = 0; domainCounter < selectionDomains.Count; domainCounter++)
             {
-                prizeResultRow.PrizeSelectedCount = resultsSummary[prizeResultRow.PrizeIndex];
+                //since the resultsSummary dictionaries don't have names embedded, we can only relate the counts
+                //to prize name in context of the associated selection domain.
+                SelectionDomain currentSelectionDomain = selectionDomains[domainCounter];
+                IDictionary<int, int> resultsSummary = resultSummariesList[domainCounter];
+
+                //walk through prizeResultTable one prize at a time, ADDING in counts
+
+                //walk through non zero resultsSummary one prize at a time, linking to prize name and ADDING in counts
+                for (int item = 0; item < resultsSummary.Count; item++)
+                {
+                    if (resultsSummary[item + 1] > 0)
+                    {
+                        //get prize name from selection domain prizeSelectionTable
+                        string prizeName = currentSelectionDomain.PrizeSelectionTable
+                            .Where(r => r.PrizeIndex == (item + 1)).Select(r => r.PrizeName).Single();
+
+                        //now map prizeName back to prizeResultTable
+                        PrizeResultRow rowToUpdate = prizeResultTable.Single(p => p.PrizeName == prizeName);
+
+                        rowToUpdate.PrizeSelectedCount += resultsSummary[item + 1];
+                    }
+                }
+
             }
 
             return prizeResultTable;
@@ -102,6 +138,13 @@ namespace PrizeSelection.Logic
 
         public IList<PrizeResultRow> SelectPrizes(IList<SelectionDomain> selectionDomains, int selectionCount, Random random = null)
         {
+
+            #region Validations       
+            if (selectionCount > 100)
+            {
+                throw new ArgumentException($"selectionCount must be 100 or LESS");
+            }
+            #endregion
 
             //Set up variables and structures
 
@@ -159,7 +202,61 @@ namespace PrizeSelection.Logic
 
             return selectedPrize;
         }
+
+        private IList<PrizeNameCategoryPair> GetUniquePrizeNameCategoryPairs(IList<SelectionDomain> selectionDomains)
+        {
+            //final count of prize rows in results is distict union of prize names
+            List<PrizeNameCategoryPair> prizeNames = selectionDomains.SelectMany(sd => sd.PrizeSelectionTable).
+                Select(r => new PrizeNameCategoryPair(r.PrizeName, r.PrizeCategoryName)).ToList();
+
+            //clean up list to allow for better distincting. Main cleanup is if a prize is in multiple categories, 
+            //each its categeory names should be replaced by "Multi-Category"
+            var categoriesByPrizes = from pn in prizeNames group pn.CategoryName by pn.PrizeName into g select new { PrizeName = g.Key, Categories = g.ToList() };
+            var multiCatPrizeNames = categoriesByPrizes.Where(gm => gm.Categories.Count > 1).Select(m => m.PrizeName).ToList();
+
+            foreach (var item in prizeNames)
+            {
+                if (multiCatPrizeNames.Contains(item.PrizeName))
+                {
+                    item.CategoryName = "Multi-Category";
+                }
+            }
+
+            //now we can distint
+            IList<PrizeNameCategoryPair> uniquePrizeNames = prizeNames.Distinct(new PrizeNameCategoryPairEqualityComparer()).ToList();
+
+            return uniquePrizeNames;
+        }
         #endregion
 
+        private class PrizeNameCategoryPair
+        {
+            public PrizeNameCategoryPair(string prizeName, string categoryName)
+            {
+                PrizeName = prizeName;
+                CategoryName = categoryName;
+            }
+
+            public string PrizeName { get; set; }
+            public string CategoryName { get; set; }
+        }
+
+        private class PrizeNameCategoryPairEqualityComparer : IEqualityComparer<PrizeNameCategoryPair>
+        {
+            public bool Equals(PrizeNameCategoryPair x, PrizeNameCategoryPair y)
+            {
+                if (x == null && y == null) return true;
+                if(x == null || y == null) return false;
+                if (x.PrizeName == y.PrizeName && x.CategoryName == y.CategoryName) return true;
+                else return false;
+
+            }
+
+            public int GetHashCode(PrizeNameCategoryPair obj)
+            {
+                int hashCode = obj.PrizeName.GetHashCode() ^ obj.CategoryName.GetHashCode();
+                return hashCode.GetHashCode();
+            }
+        }
     }
 }

@@ -596,7 +596,103 @@ namespace PrizeSelection.Test
             WritePrizeResultTableTextToConsole(prizeResultsTable);
         }
 
+        [TestMethod]
+        public void SelectPrizes_Single_DifferingPrizes_WithNames_Success()
+        {
 
+            IList<string> guaranteedPrizeNames = new List<string>(){"Prize-1", "Prize-2", "Prize-3", "Prize-4"};
+            IList<string> variablePrizeNames = new List<string>() { "Prize-3", "Prize-4", "Prize-5", "Prize-6", "Prize-7", "Prize-8", "Prize-9", "Prize-10"};
+
+            PrizeCategorySpecification guaranteedSpec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                                                                    "Guaranteed Category",
+                                                                    1.0,
+                                                                    guaranteedPrizeNames);
+
+            IList<PrizeSelectionRow> guaranteedPrizeSelectionRows = _prizeSelectionTableHelper.GetPrizeSelectionTable(
+                                                                    new List<PrizeCategorySpecification>(){ guaranteedSpec });
+
+
+            PrizeCategorySpecification variableSpec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                                                                    "Variable Category",
+                                                                    0.4,
+                                                                    variablePrizeNames);
+
+            IList<PrizeSelectionRow> variablePrizeSelectionRows = _prizeSelectionTableHelper.GetPrizeSelectionTable(
+                                                                    new List<PrizeCategorySpecification>() { variableSpec });
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = guaranteedPrizeSelectionRows
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = variablePrizeSelectionRows
+                                                          }
+
+                                                      };
+
+            IList<PrizeResultRow> prizeResultsTable = _selectionEngine.SelectPrizes(selectionDomains);
+
+            Assert.IsNotNull(prizeResultsTable);
+
+            WritePrizeResultTableTextToConsole(prizeResultsTable);
+        }
+
+        [TestMethod]
+        public void SelectPrizes_Multi_DifferingPrizes_WithNames_Success()
+        {
+            int multiSelectCount = 10;
+            IList<string> guaranteedPrizeNames = new List<string>() { "Prize-1", "Prize-2", "Prize-3", "Prize-4" };
+            IList<string> variablePrizeNames = new List<string>() { "Prize-3", "Prize-4", "Prize-5", "Prize-6", "Prize-7", "Prize-8", "Prize-9", "Prize-10" };
+
+            PrizeCategorySpecification guaranteedSpec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                                                                    "Guaranteed Category",
+                                                                    1.0,
+                                                                    guaranteedPrizeNames);
+
+            IList<PrizeSelectionRow> guaranteedPrizeSelectionRows = _prizeSelectionTableHelper.GetPrizeSelectionTable(
+                                                                    new List<PrizeCategorySpecification>() { guaranteedSpec });
+
+
+            PrizeCategorySpecification variableSpec = _prizeSelectionTableHelper.CreatePrizeCategorySpecification(
+                                                                    "Variable Category",
+                                                                    0.4,
+                                                                    variablePrizeNames);
+
+            IList<PrizeSelectionRow> variablePrizeSelectionRows = _prizeSelectionTableHelper.GetPrizeSelectionTable(
+                                                                    new List<PrizeCategorySpecification>() { variableSpec });
+
+            IList<SelectionDomain> selectionDomains = new List<SelectionDomain>()
+                                                      {
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 1,
+                                                              SelectionDomainName = "Guaranteed",
+                                                              PrizeSelectionTable = guaranteedPrizeSelectionRows
+                                                          },
+
+                                                          new SelectionDomain()
+                                                          {
+                                                              PrizesToSelectFromDomainCount = 10,
+                                                              SelectionDomainName = "Variable",
+                                                              PrizeSelectionTable = variablePrizeSelectionRows
+                                                          }
+
+                                                      };
+
+            IList<PrizeResultRow> prizeResultsTable = _selectionEngine.SelectPrizes(selectionDomains, multiSelectCount);
+
+            Assert.IsNotNull(prizeResultsTable);
+
+            WritePrizeResultTableTextToConsole(prizeResultsTable);
+        }
 
         [TestMethod]
         public void SelectPrizes_Multi_FFRK_Simple_WithNames_Success()
@@ -685,7 +781,7 @@ namespace PrizeSelection.Test
         [TestMethod]
         public void SelectPrizes_Multi_FFRK_Detailed_WithNames_Success()
         {
-            int multiPullCount = 4;
+            int multiPullCount = 10;
 
             IList<PrizeCategorySpecification> specsFFRKDetailedGuaranteedWithNames =
                 GetFFRKPrizeCategorySpecifications_Detailed_Guaranteed_WithName(1);
@@ -1128,7 +1224,7 @@ namespace PrizeSelection.Test
             //category 0 = on banner 5 or 6 ; 14.0% ; scaled = 60/60 * (14.0/14.0) = 1.0
             //total must be 60/60
 
-            string onBannerFiveOrSixStarPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStarPrizeCategoryName = "5 or 6 *";
 
             double onBannerFiveOrSixStarRate = 1; // = 1.0
 
@@ -1150,7 +1246,7 @@ namespace PrizeSelection.Test
             //category 0 = on banner 5 or 6 ; 14.0% ; scaled = 60/60 * (14.0/14.0) = 1.0
             //total must be 60/60
 
-            string onBannerFiveOrSixStarPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStarPrizeCategoryName = "5 or 6 *";
 
             double onBannerFiveOrSixStarRate = 1; // = 1.0
 
@@ -1168,7 +1264,7 @@ namespace PrizeSelection.Test
 
         public IList<PrizeCategorySpecification> GetFFRKPrizeCategorySpecifications_Detailed_Guaranteed_WithName(int banner)
         {
-            string onBannerFiveOrSixStaPrizeCategoryName = "5/6*";
+            string onBannerFiveOrSixStaPrizeCategoryName = "5 or 6 *";
             string offBannerSixStarPrizeCategoryName = "OffBan 6*";
             string offBannerFiveStarPrizeCategoryName = "OffBan 5*";
 
@@ -1206,7 +1302,7 @@ namespace PrizeSelection.Test
             //category 2 = of banner 4; .02 % ;  scaled = 60/60 * (0.02/14.04) = .001424501 etc
             //total must be 60/60
 
-            string onBannerFiveOrSixStaPrizeCategoryName = "5/6*";
+            string onBannerFiveOrSixStaPrizeCategoryName = "5 or 6 *";
             string offBannerSixStarPrizeCategoryName = "OffBan 6*";
             string offBannerFiveStarPrizeCategoryName = "OffBan 5*";
 
@@ -1241,7 +1337,7 @@ namespace PrizeSelection.Test
   
         public IList<PrizeCategorySpecification> GetFFRKPrizeCategorySpecifications_Simple_Variable_WithName(int banner)
         {
-            string onBannerFiveOrSixStaPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStaPrizeCategoryName = "5 or 6 *";
 
             double onBannerFiveOrSixStarRate = 7.0 / 60.0; // = 0.11666666666666666666666666666667
 
@@ -1259,7 +1355,7 @@ namespace PrizeSelection.Test
 
         public IList<PrizeCategorySpecification> GetFFRKPrizeCategorySpecifications_Simple_Variable_WithoutName()
         {
-            string onBannerFiveOrSixStaPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStaPrizeCategoryName = "5 or 6 *";
 
             double onBannerFiveOrSixStarRate = 7.0 / 60.0; // = 0.11666666666666666666666666666667
 
@@ -1277,7 +1373,7 @@ namespace PrizeSelection.Test
 
         public IList<PrizeCategorySpecification> GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithName(int banner)
         {
-            string onBannerFiveOrSixStarPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStarPrizeCategoryName = "5 or 6 *";
             string offBannerSixStarPrizeCategoryName = "OffBan 6*";
             string offBannerFiveStarPrizeCategoryName = "OffBan 5*";
 
@@ -1309,7 +1405,7 @@ namespace PrizeSelection.Test
 
         public IList<PrizeCategorySpecification> GetFFRKPrizeCategorySpecifications_Detailed_Variable_WithoutName()
         {
-            string onBannerFiveOrSixStaPrizeCategoryName = "5/6 *";
+            string onBannerFiveOrSixStaPrizeCategoryName = "5 or 6 *";
 
             double onBannerFiveOrSixStarRate = 7.0 / 60.0; // = 0.11666666666666666666666666666667
 
