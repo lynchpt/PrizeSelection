@@ -11,16 +11,6 @@ namespace PrizeSelection.Logic
         IList<PrizeResultRow> SelectPrizes(IList<SelectionDomain> selectionDomains, Random random = null);
 
         IList<PrizeResultRow> SelectPrizes(IList<SelectionDomain> selectionDomains, int selectionCount, Random random = null);
-
-        //PrizeSelectionRow SelectPrizeFromPrizeTable(IList<PrizeSelectionRow> prizeSelectionTable, double randomNumber);
-
-        #region Deprecated
-        //IDictionary<int, int> SimulateBulkPullGeneric(int bannerRelicCount, IList<SelectionDomain> selectionDomains, Random random = null);
-
-        //int GetRelicKeyFromProbabilityTableForGivenNumber(IDictionary<int, double> probabilityTable, double rolledNumber);
-
-        //
-        #endregion
     }
 
     public class SelectionEngine : ISelectionEngine
@@ -171,66 +161,5 @@ namespace PrizeSelection.Logic
         }
         #endregion
 
-        #region Deprecated
-        //public IDictionary<int, int> SimulateBulkPullGeneric(int bannerRelicCount, IList<SelectionDomain> selectionDomains, Random random = null)
-        //{
-        //    #region Validations
-        //    foreach (var selectionDomain in selectionDomains)
-        //    {
-        //        if (selectionDomain.PrizesToSelectFromDomainCount <= 0)
-        //        {
-        //            throw new ArgumentException($"PrizesToSelectFromDomainCount for SelectFromDomain {selectionDomain.SelectionDomainName} must be greater than 0");
-        //        }
-        //        if (!_prizeSelectionTableHelper.IsPullProbabilityTableValid(selectionDomain.ProbabilityTable))
-        //        {
-        //            throw new ArgumentException($"ProbabilityTable for SelectFromDomain {selectionDomain.SelectionDomainName} was invalid");
-        //        }
-        //    }
-        //    #endregion
-
-        //    IDictionary<int, int> simulatedBulkPullResultsTable = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(bannerRelicCount);
-        //    if (random == null)
-        //    {
-        //        random = new Random();
-        //    }
-
-        //    foreach (var selectionDomain in selectionDomains)
-        //    {
-        //        for (int counter = 0; counter < selectionDomain.PrizesToSelectFromDomainCount; counter++)
-        //        {
-        //            int selectedRelicKey = GetRelicKeyFromProbabilityTableForGivenNumber(selectionDomain.ProbabilityTable, random.NextDouble());
-
-        //            if (selectedRelicKey > 0)
-        //            {
-        //                simulatedBulkPullResultsTable[selectedRelicKey]++;
-        //            }
-        //        }
-        //    }
-
-        //    return simulatedBulkPullResultsTable;
-        //}
-
-        ////0 = no matching relics were found
-        //public int GetRelicKeyFromProbabilityTableForGivenNumber(IDictionary<int, double> probabilityTable, double rolledNumber)
-        //{
-        //    int selectedRelicKey = 0;
-
-        //    //scan table from the top down until we find the first relic whose lower bound is less than or equal to than the provided roll; 
-        //    //the relic we want is the one immediately lower in the table.
-        //    int tableMaxKey = probabilityTable.Count;
-
-        //    //top down
-        //    for (int key = 1; key <= tableMaxKey; key++)
-        //    {
-        //        if (probabilityTable[key] <= rolledNumber) //we have a hit!
-        //        {
-        //            selectedRelicKey = key;
-        //            break;
-        //        }
-        //    }
-
-        //    return selectedRelicKey;
-        //} 
-        #endregion
     }
 }

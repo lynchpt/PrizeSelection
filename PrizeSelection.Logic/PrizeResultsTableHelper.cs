@@ -13,11 +13,6 @@ namespace PrizeSelection.Logic
         IList<PrizeResultRow> CombinePrizeResultTables(IList<PrizeResultRow> table1,
             IList<PrizeResultRow> table2);
 
-        #region Deprecated
-
-        //IDictionary<int, int> CombinePullResultsTables(IDictionary<int, int> pullResultsSource,
-        //    IDictionary<int, int> pullResultsTarget); 
-        #endregion
     }
 
     public class PrizeResultsTableHelper : IPrizeResultsTableHelper
@@ -73,29 +68,5 @@ namespace PrizeSelection.Logic
             return combinedPrizeResultsTable;
         }
 
-        #region Deprecated
-        //pullResultsTarget has the source results added in
-        //public IDictionary<int, int> CombinePullResultsTables(IDictionary<int, int> pullResultsSource, IDictionary<int, int> pullResultsTarget)
-        //{
-        //    //check that both tables hasve the same number of entries
-        //    if (pullResultsSource == null || pullResultsTarget == null || pullResultsSource.Keys.Count != pullResultsTarget.Keys.Count)
-        //    {
-        //        throw new ArgumentException("pull results tables must not be null");
-        //    }
-        //    if (pullResultsSource.Keys.Count != pullResultsTarget.Keys.Count)
-        //    {
-        //        throw new ArgumentException("pull results tables must be the same size");
-        //    }
-
-        //    int tableSize = pullResultsTarget.Keys.Count;
-
-        //    for (int key = 1; key <= tableSize; key++)
-        //    {
-        //        pullResultsTarget[key] += pullResultsSource[key];
-        //    }
-
-        //    return pullResultsTarget;
-        //} 
-        #endregion
     }
 }

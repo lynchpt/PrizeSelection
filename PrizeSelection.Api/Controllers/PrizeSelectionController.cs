@@ -60,19 +60,17 @@ namespace PrizeSelection.Api.Controllers
 
         #region IPrizeSelectionController Implementation
         /// <summary>
-        /// Gets one Ability by its unique id
+        /// This helper method takes submitted metadata and transforms them into a PrizeCategorySpecification object. This method 
+        /// is not required; it is merely for convenience.
+        /// 
         /// </summary>
         /// <remarks>
-        /// Sample Use Case - You want to find out data about the Ability called "Firaja"
-        /// - You first call /api/v1.0/IdLists/Ability to get the proper IdList
-        /// - Then you look up the integer Key associated with the Value of "Firaja" in the IdList (the id is 4 in this case)
-        /// - Finally you call this api: api/v1.0/Abilities/4
-        /// <br /> 
-        /// Example - http://ffrkapi.azurewebsites.net/api/v1.0/Abilities/4 (or use Try It Out to see data in this page)
         /// </remarks>
-        /// <param name="abilityId">the integer id for the desired Ability; it can be found in the Ability IdList</param>
+        /// <param name="prizeCategoryName"></param>
+        /// <param name="probabilityExtentForEntireCategory"></param>
+        /// <param name="prizesInPrizeCategoryCount"></param>
         /// <response code="200">
-        ///     <see>IEnumerable&lt;Ability&gt;</see>
+        ///     <see>IList&lt;PrizeCategorySpecification&gt;</see>
         /// </response>
         [HttpPost]
         [Route(RouteConstants.PrizeCategorySpecification)]
@@ -96,6 +94,22 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(prizeCategorySpecifications);
         }
 
+
+        /// <summary>
+        /// This helper method takes submitted metadata and transforms them into a PrizeCategorySpecification object. This method 
+        /// is not required; it is merely for convenience.
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// This method is for use when you don't want to bother supplying names for the Prizes; this method will generate default 
+        /// names for you.
+        /// </remarks>
+        /// <param name="prizeCategoryName"></param>
+        /// <param name="probabilityExtentForEntireCategory"></param>
+        /// <param name="prizesInPrizeCategoryCount"></param>
+        /// <response code="200">
+        ///     <see>IList&lt;PrizeCategorySpecification&gt;</see>
+        /// </response>
         [HttpGet]
         [Route(RouteConstants.PrizeCategorySpecificationNoNames)]
         [SwaggerOperation(nameof(GetPrizeCategorySpecificationNoNames))]
@@ -118,6 +132,26 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(prizeCategorySpecifications);
         }
 
+        /// <summary>
+        /// This helper method takes submitted PrizeCategorySpecifications and transforms them into a fleshed out set of
+        /// PrizeSelectionRows (i.e. makes the PrizeSelection table).
+        /// </summary>
+        /// <remarks>
+        /// The passed in data in the PrizeCategorySpecification contains the name of the category, the list of Prizes (by name) 
+        /// in the category, and how much of the probability table the Prizes cover. Note that each Prize takes an equal pro rata
+        /// share of the total ProbabilityExtentForEntireCategory. For example, if you provide ten Prizes and a ProbabilityExtentForEntireCategory
+        /// value of 0.20, the resulting set of PrizeSelectionRows from this method will have ten members (one for each Prize), each 
+        /// of which is assigned a 0.02 span in the Probablity table, which equates to a 2% chance of being chosen in each selection.
+        /// <br /> 
+        /// Note that each prize in a PrizeCategorySpecification will have the same chance of being chosen. If you need to simulate a 
+        /// PrizeSelection table where some Prizes have different selection chances than others, you will need to pass to this 
+        /// method multiple PrizeCategorySpecification.
+        /// </remarks>
+        /// <param name="prizeCategorySpecifications">the list of PrizeCategorySpecification objects that describe what Prizes 
+        /// should be on the resulting PrizeSelection table and how much probablity space they each share equally.</param>
+        /// <response code="200">
+        ///     <see>IList&lt;PrizeSelectionRow&gt;</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.PrizeSelectionTable)]
         [SwaggerOperation(nameof(GetPrizeSelectionTable))]
@@ -165,6 +199,8 @@ namespace PrizeSelection.Api.Controllers
         /// In all cases, the returned result is a set of PrizeResultRows, which functions as a table telling you for each possible prize 
         /// how many of them you picked in the Prize Selection operation. Note that any prize you specified in the SelectionDomain will 
         /// show up in the PrizeResultRow set, even if no instances of that Prize was selected.
+        /// <br /> 
+        /// If contructing a PrizeSelectionTable seems daunting, look into the helper method \PrizeSelectionTable that can help you create one.
         /// 
         /// </remarks>
         /// <param name="selectionDomains">the specification objects for how to conduct the Prize Selection operation</param>
@@ -195,8 +231,8 @@ namespace PrizeSelection.Api.Controllers
         }
 
         /// <summary>
-        /// Performs one Prize Selection operation against the provided SelectionDomains, which specify how many prizes are selected and 
-        /// what rates each individual prize has of being selected from the provided PrizeSelectionTables.
+        /// Performs the specified number of Prize Selection operation against the provided SelectionDomains, which specify how 
+        /// many prizes are selected and what rates each individual prize has of being selected from the provided PrizeSelectionTables.
         /// 
         /// </summary>
         /// <remarks>
@@ -299,6 +335,45 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(successChance);
         }
 
+        /// <summary>
+        /// This method calculates what the chance is that: for the specified number of Prize Selection operations against the specified 
+        /// SelectionDomains (see the documentation for PrizeResults/{selectionCount} for details on SelectionDomains), the combined results 
+        /// of all selections will meet or exceed the SuccessCriteria you specify. In this case, SuccessCriteria can include a SubsetCount value
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// This method differs from /SuccessChance in one respect:
+        /// rather than every single non-zero Prize count you set needing to be matched for a PrizeSelection operation to be a success, you
+        /// additionally specify a smaller number, and if even this smaller number of Prizes meet their count criteria, the 
+        /// PrizeSelection operation will count as a success. For example, you can specify three Prizes with non zero counts, but also 
+        /// specify a subset value of two, meaning that if if any two Prizes out of the three are selected, the PrizeSelection operation 
+        /// counts as a success.
+        /// <br /> 
+        /// The SuccessCalculationInput you pass in is basically the same data you provide for PrizeResults/{selectionCount}, all bundled 
+        /// together in one parameter object that also includes the SuccessCriteria.
+        /// <br /> 
+        /// The SuccessCriteria is a simple "table" of Prize keys (the 1 based index of the Prize in the Prize Selection table) correlated 
+        /// to how many instances of each of those Prizes needs to be drawn within the specified number of Prize Selection operations for 
+        /// the entire set of selections to be considered a success by you. The SuccessCriteria needs to include every item that appears
+        /// in any of the PrizeSelectionTables in the SelectionDomains; if any of those Prizes are irrelevant to you, just set 0 
+        /// as the number of instances needed for success.
+        /// <br /> 
+        /// To give the best estimate of the success chance; the full set of Prize Selection operations will be simulated numerous times 
+        /// to smooth out randomness and give you the average chance.
+        /// <br /> 
+        /// The result is just a number representing the success chance, this method does not return the exact set of Prizes selected for 
+        /// any given set of Prize Selection operations or for all of them together.
+        ///
+        /// </remarks>
+        /// <param name="successCalculationInput">the required input object that contains the SelectionDomains making up each 
+        /// Prize Selection operation, how many Prize Selection operations to perform before checking for success, and the SuccessCriteria 
+        /// that are used to determine if the Prizes selected in any of the Prize Selection operations constitute success. The input 
+        /// also contains a SubsetCount value
+        /// </param>
+        /// <response code="200">
+        ///     <see>double</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.SuccessChanceSubset)]
         [SwaggerOperation(nameof(GetChanceToMeetSuccessCriteriaSubsetForFixedSelectionCount))]
@@ -320,7 +395,31 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(successChance);
         }
 
-
+        /// <summary>
+        /// This method provides statistical information about how many Prize Selection operations will need to be performed before the 
+        /// success criteria you provide will be met or exceeded. Numerous trials are performed to lend greater accuracy to the results.
+        /// 
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// The information includes:
+        /// <br /> 
+        /// - TrialsConducted
+        /// - MinSelectionsRequired
+        /// - MaxSelectionsRequired
+        /// - MedianSelectionsRequired
+        /// - ModeSelectionsRequired
+        /// - MeanSelectionsRequired
+        ///
+        /// </remarks>
+        /// <param name="successCalculationInput">the required input object that contains the SelectionDomains making up each 
+        /// Prize Selection operation, how many Prize Selection operations to perform before checking for success, and the SuccessCriteria 
+        /// that are used to determine if the Prizes selected in any of the Prize Selection operations constitute success.
+        /// </param>
+        /// <response code="200">
+        ///     <see>PrizeSelectionsForSuccessInfo</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.SelectionsUntilSuccess)]
         [SwaggerOperation(nameof(GetResultsForPullsUntilSuccess))]
@@ -342,6 +441,38 @@ namespace PrizeSelection.Api.Controllers
             return new ObjectResult(result);
         }
 
+        /// <summary>
+        /// This method provides statistical information about how many Prize Selection operations will need to be performed before the 
+        /// success criteria you provide will be met or exceeded. Numerous trials are performed to lend greater accuracy to the results.
+        /// 
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// This method differs from /SelectionsUntilSuccess in one respect:
+        /// rather than every single non-zero Prize count you set needing to be matched for a PrizeSelection operation to be a success, you
+        /// additionally specify a smaller number, and if even this smaller number of Prizes meet their count criteria, the 
+        /// PrizeSelection operation will count as a success. For example, you can specify three Prizes with non zero counts, but also 
+        /// specify a subset value of two, meaning that if if any two Prizes out of the three are selected, the PrizeSelection operation 
+        /// counts as a success.
+        /// 
+        /// The information includes:
+        /// <br /> 
+        /// - TrialsConducted
+        /// - MinSelectionsRequired
+        /// - MaxSelectionsRequired
+        /// - MedianSelectionsRequired
+        /// - ModeSelectionsRequired
+        /// - MeanSelectionsRequired
+        ///
+        /// </remarks>
+        /// <param name="successCalculationInput">the required input object that contains the SelectionDomains making up each 
+        /// Prize Selection operation, how many Prize Selection operations to perform before checking for success, and the SuccessCriteria 
+        /// that are used to determine if the Prizes selected in any of the Prize Selection operations constitute success. The input 
+        /// also contains a SubsetCount value
+        /// </param>
+        /// <response code="200">
+        ///     <see>PrizeSelectionsForSuccessInfo</see>
+        /// </response>
         [HttpPost]
         [Route(RouteConstants.SelectionsUntilSuccessSubset)]
         [SwaggerOperation(nameof(GetResultsForPullsUntilSuccessSubset))]

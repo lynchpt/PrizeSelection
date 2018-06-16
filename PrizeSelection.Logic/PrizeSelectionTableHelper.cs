@@ -15,23 +15,13 @@ namespace PrizeSelection.Logic
         PrizeCategorySpecification CreatePrizeCategorySpecification(string prizeCategoryName, double prizeAcquisitionRateForPrizeCategory, IList<string> prizeCategoryPrizeNames);
 
         bool IsPrizeSelectionTableValid(IList<PrizeSelectionRow> prizeSelectionTable);
-
-        #region Deprecated
-        //IDictionary<int, double> GetDefaultPullProbabilityTable(int bannerRelicCount, double pullCategoryRelicAcquisitionRate);
-
-        //IDictionary<int, double> GetPullProbabilityTable(
-        //    IList<PrizeCategorySpecification> pullProbabilitySpecifications,
-        //    IDictionary<int, double> targetPullCategoryProbabilityTable);
-
-        //bool IsPullProbabilityTableValid(IDictionary<int, double> pullProbabilityTable);
-
-        #endregion
     }
 
     public class PrizeSelectionTableHelper : IPrizeSelectionTableHelper
     {
         #region Class Variables
-        IResultsFormatter _resultsFormatter;
+
+        readonly IResultsFormatter _resultsFormatter;
         #endregion
 
         #region Constructors
@@ -196,111 +186,6 @@ namespace PrizeSelection.Logic
                 prizeSelectionRow.PrizeProbabilityLowerBound = 0;
             }
         }
-        #endregion
-
-        #region Deprecated
-        ////assumes even distribution of relics across the probability space
-        ////lower indexes are "higher up" in the table, and require larger numbers to hit
-        ////the value part of the dictionary (the double) represents the lower bound of the random number needed to hit this relic
-        //public IDictionary<int, double> GetDefaultPullProbabilityTable(int bannerRelicCount, double pullCategoryRelicAcquisitionRate)
-        //{
-        //    IDictionary<int, double> pullCategoryProbabilityTable = new Dictionary<int, double>(bannerRelicCount);
-
-        //    if (bannerRelicCount <= 0)
-        //    {
-        //        throw new ArgumentException("bannerRelicCount must be greater than 0");
-        //    }
-        //    if (pullCategoryRelicAcquisitionRate < 0.0 || pullCategoryRelicAcquisitionRate > 1.0)
-        //    {
-        //        throw new ArgumentException($"pullCategoryRelicAcquisitionRate must be between 0 and 1");
-        //    }
-
-        //    double probabilityIncrement = pullCategoryRelicAcquisitionRate / bannerRelicCount;
-
-        //    for (int relicIndex = 0; relicIndex < bannerRelicCount; relicIndex++)
-        //    {
-        //        pullCategoryProbabilityTable.Add(relicIndex + 1, 1 - (probabilityIncrement * (relicIndex + 1))); //we start from the top prize and work down the table
-        //    }
-
-        //    return pullCategoryProbabilityTable;
-        //}
-
-        ////if targetPullCategoryProbabilityTable is not null, the data from pullProbabilitySpecifications will be added to the bottom
-        //public IDictionary<int, double> GetPullProbabilityTable(IList<PrizeCategorySpecification> pullProbabilitySpecifications, IDictionary<int, double> targetPullCategoryProbabilityTable)
-        //{
-        //    #region validations
-        //    if (pullProbabilitySpecifications == null || !pullProbabilitySpecifications.Any())
-        //    {
-        //        throw new ArgumentException("pullProbabilitySpecifications must be greater non null and have 1 or more members");
-        //    }
-        //    if (pullProbabilitySpecifications.Any(ps => ps.ProbabilityExtentForEntireCategory < 0.0) || pullProbabilitySpecifications.Any(ps => ps.ProbabilityExtentForEntireCategory > 1.0))
-        //    {
-        //        throw new ArgumentException($"pullCategoryRelicAcquisitionRate must be between 0 and 1");
-        //    }
-        //    if (pullProbabilitySpecifications.Any(ps => ps.PrizeCount <= 0))
-        //    {
-        //        throw new ArgumentException($"PrizeCount must be between greater than 0");
-        //    }
-        //    #endregion
-
-        //    double initialLowerBound = 0.0; //this is the point from which we start adding other probability ranges to the bottom.
-        //    int initialMaxRelicKey = 0; //this is the point from which we start adding other probability keys to the bottom.
-        //    IDictionary<int, double> pullCategoryProbabilityTable = new Dictionary<int, double>(); //will get replaced if another table is passed in
-
-        //    if (targetPullCategoryProbabilityTable != null)
-        //    {
-        //        //we need our lower bound to be from the bottom of the passed in probability table
-        //        initialLowerBound = targetPullCategoryProbabilityTable.OrderBy(pcpt => pcpt.Key).Last().Value;
-        //        initialMaxRelicKey = targetPullCategoryProbabilityTable.OrderBy(pcpt => pcpt.Key).Last().Key;
-        //        pullCategoryProbabilityTable = targetPullCategoryProbabilityTable;
-        //    }
-        //    else
-        //    {
-        //        initialLowerBound = 1.0; //this is the point from which we start adding other probability ranges to the bottom.
-        //    }
-
-        //    foreach (var pullProbabilitySpecification in pullProbabilitySpecifications)
-        //    {
-        //        double probabilityIncrement = pullProbabilitySpecification.ProbabilityExtentForEntireCategory / pullProbabilitySpecification.PrizeCount;
-        //        for (int relicIndex = 0; relicIndex < pullProbabilitySpecification.PrizeCount; relicIndex++)
-        //        {
-        //            pullCategoryProbabilityTable.Add(relicIndex + initialMaxRelicKey + 1, initialLowerBound - (probabilityIncrement * (relicIndex + 1))); //we start from the top prize and work down the table
-        //        }
-
-        //        initialLowerBound = pullCategoryProbabilityTable.OrderBy(pcpt => pcpt.Key).Last().Value;
-        //        initialMaxRelicKey = pullCategoryProbabilityTable.OrderBy(pcpt => pcpt.Key).Last().Key;
-        //    }
-
-        //    return pullCategoryProbabilityTable;
-        //}
-        //probabilities must monotonically decrease as you go down the table
-        //public bool IsPullProbabilityTableValid(IDictionary<int, double> pullProbabilityTable)
-        //{
-        //    bool isValid = true;
-
-        //    int tableSize = pullProbabilityTable.Keys.Count;
-        //    for (int key = 1; key <= tableSize; key++)
-        //    {
-        //        double pullProbability = pullProbabilityTable[key];
-
-        //        if (pullProbability >= 1.0 || pullProbability < 0)
-        //        {
-        //            isValid = false;
-        //        }
-
-        //        if (key > 1)
-        //        {
-        //            double pullProbabilityPrevious = pullProbabilityTable[key - 1];
-        //            if (pullProbabilityPrevious <= pullProbability)
-        //            {
-        //                isValid = false;
-        //            }
-        //        }
-        //    }
-
-        //    return isValid;
-        //}
-
         #endregion
     }
 }

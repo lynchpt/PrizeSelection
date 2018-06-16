@@ -17,15 +17,6 @@ namespace PrizeSelection.Logic
 
 
         PrizeSelectionsForSuccessInfo GetResultsForPullsUntilSuccessSubset(IDictionary<int, int> successCriteria, IList<SelectionDomain> selectionDomains, int subsetSize, Random random = null);
-
-        //bool DoPrizeResultsMeetSuccessCriteria(IList<PrizeResultRow> prizeResultTable, IDictionary<int, int> successCriteria);
-
-        #region Deprecated
-        //double GetChanceToMeetSuccessCriteriaForFixedPulls(IDictionary<int, int> successCriteria, int numberOfPulls, int bannerRelicCount, IList<SelectionDomain> pullCategoryParameterSets, Random random = null);
-        //PrizeSelectionsForSuccessInfo GetResultsForPullsUntilSuccess(IDictionary<int, int> successCriteria, int bannerRelicCount, IList<SelectionDomain> pullCategoryParameterSets, Random random = null);
-        //bool DoPullResultsMeetSuccessCriteria(IDictionary<int, int> pullResults, IDictionary<int, int> successCriteria);
-
-        #endregion
     }
 
     public class SelectionSuccessCalculator : ISelectionSuccessCalculator
@@ -348,100 +339,6 @@ namespace PrizeSelection.Logic
 
             return median;
         } 
-        #endregion
-
-        #region Deprecated
-
-        //public double GetChanceToMeetSuccessCriteriaForFixedPulls(IDictionary<int, int> successCriteria, int numberOfPulls, int bannerRelicCount, IList<SelectionDomain> pullCategoryParameterSets, Random random = null)
-        //{
-        //    double trials = 10000; //harcoded so user can't DOS
-        //    int successes = 0;
-
-        //    for (int trial = 0; trial < trials; trial++)
-        //    {
-        //        IDictionary<int, int> trialPullResults = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(successCriteria.Keys.Count);
-
-        //        for (int pullCounter = 0; pullCounter < numberOfPulls; pullCounter++)
-        //        {
-        //            IDictionary<int, int> pullResults = _selectionEngine.SimulateBulkPullGeneric(bannerRelicCount, pullCategoryParameterSets, random);
-        //            trialPullResults = _prizeResultsTableHelper.CombinePullResultsTables(pullResults, trialPullResults);
-        //            if (DoPullResultsMeetSuccessCriteria(trialPullResults, successCriteria))
-        //            {
-        //                successes++;
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    double successChance = successes / trials;
-        //    return successChance;
-        //}
-
-        //public PrizeSelectionsForSuccessInfo GetResultsForPullsUntilSuccess(IDictionary<int, int> successCriteria, int bannerRelicCount, IList<SelectionDomain> pullCategoryParameterSets, Random random = null)
-        //{
-        //    PrizeSelectionsForSuccessInfo successInfo = new PrizeSelectionsForSuccessInfo();
-        //    int trials = 10000; //harcoded so user can't DOS
-        //    IList<int> pullsRequiredForTrialSuccess = new List<int>();
-
-        //    for (int trial = 0; trial < trials; trial++)
-        //    {
-        //        IDictionary<int, int> trialPullResults = _prizeResultsTableHelper.GetEmptyPrizeResultsSummary(successCriteria.Keys.Count);
-
-        //        int pullCounter = 1;
-        //        do
-        //        {
-        //            IDictionary<int, int> pullResults = _selectionEngine.SimulateBulkPullGeneric(bannerRelicCount, pullCategoryParameterSets, random);
-        //            trialPullResults = _prizeResultsTableHelper.CombinePullResultsTables(pullResults, trialPullResults);
-        //            if (DoPullResultsMeetSuccessCriteria(trialPullResults, successCriteria))
-        //            {
-        //                pullsRequiredForTrialSuccess.Add(pullCounter);
-        //                break;
-        //            }
-        //            pullCounter++;
-        //        } while (true);
-        //    };
-
-        //    //now that all the trials have recorded the number of pulls required to succeed, we can calculate the statistics
-        //    successInfo.TrialsConducted = trials;
-        //    successInfo.MinPullsRequired = pullsRequiredForTrialSuccess.Min();
-        //    successInfo.MaxPullsRequired = pullsRequiredForTrialSuccess.Max();
-        //    successInfo.MeanPullsRequired = pullsRequiredForTrialSuccess.Average();
-        //    successInfo.ModePullsRequired = GetModeFromList(pullsRequiredForTrialSuccess);
-        //    successInfo.MedianPullsRequired = GetMedianFromList(pullsRequiredForTrialSuccess);
-
-        //    return successInfo;
-        //}
-
-        ////criteria are met if for each relic key with non zero count in criteria, the corresponding relic key in the pull results has a count >= the criteria count
-        //public bool DoPullResultsMeetSuccessCriteria(IDictionary<int, int> pullResults, IDictionary<int, int> successCriteria)
-        //{
-        //    //validations
-        //    if (pullResults == null || successCriteria == null)
-        //    {
-        //        throw new ArgumentException("pullResults and successCriteria must both be non null");
-        //    }
-        //    if (pullResults.Keys.Count != successCriteria.Keys.Count)
-        //    {
-        //        throw new ArgumentException("pullResults and successCriteria must both contain the same number of items");
-        //    }
-
-        //    bool isSuccess = true;
-
-        //    int tableSize = pullResults.Keys.Count;
-
-        //    for (int key = 1; key <= tableSize; key++)
-        //    {
-        //        if (successCriteria[key] > 0)
-        //        {
-        //            if (pullResults[key] < successCriteria[key])
-        //            {
-        //                isSuccess = false;
-        //            }
-        //        }
-        //    }
-
-        //    return isSuccess;
-        //} 
         #endregion
     }
 }

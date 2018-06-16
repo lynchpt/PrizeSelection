@@ -5,20 +5,20 @@ namespace PrizeSelection.Dto.Api
     public class PrizeSelectionsForSuccessInfo
     {
         public int TrialsConducted { get; set; }
-        public int MinPullsRequired { get; set; }
-        public int MaxPullsRequired { get; set; }
-        public double MedianPullsRequired { get; set; }
-        public int ModePullsRequired { get; set; }
-        public double MeanPullsRequired { get; set; }
+        public int MinSelectionsRequired { get; set; }
+        public int MaxSelectionsRequired { get; set; }
+        public double MedianSelectionsRequired { get; set; }
+        public int ModeSelectionsRequired { get; set; }
+        public double MeanSelectionsRequired { get; set; }
 
         public override string ToString()
         {
             return $"TrialsConducted: {TrialsConducted}{Environment.NewLine}" +
-                   $"MinPullsRequired: {MinPullsRequired}{Environment.NewLine}" +
-                   $"MaxPullsRequired: {MaxPullsRequired}{Environment.NewLine}" +
-                   $"MedianPullsRequired: {MedianPullsRequired}{Environment.NewLine}" +
-                   $"ModePullsRequired: {ModePullsRequired}{Environment.NewLine}" +
-                   $"MeanPullsRequired: {MeanPullsRequired}{Environment.NewLine}";
+                   $"MinSelectionsRequired: {MinSelectionsRequired}{Environment.NewLine}" +
+                   $"MaxSelectionsRequired: {MaxSelectionsRequired}{Environment.NewLine}" +
+                   $"MedianSelectionsRequired: {MedianSelectionsRequired}{Environment.NewLine}" +
+                   $"ModeSelectionsRequired: {ModeSelectionsRequired}{Environment.NewLine}" +
+                   $"MeanSelectionsRequired: {MeanSelectionsRequired}{Environment.NewLine}";
         }
     }
 }
