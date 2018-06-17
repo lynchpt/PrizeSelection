@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using PrizeSelection.Logic;
@@ -35,7 +37,7 @@ namespace PrizeSelection.Test
             _resultsFormatter = new ResultsFormatter();
             _prizeSelectionTableHelper = new PrizeSelectionTableHelper(_resultsFormatter);
             _prizeResultsTableHelper = new PrizeResultsTableHelper();
-            _selectionEngine = new SelectionEngine(_prizeSelectionTableHelper, _prizeResultsTableHelper);
+            _selectionEngine = new SelectionEngine(_prizeSelectionTableHelper, _prizeResultsTableHelper, new NullLogger<SelectionEngine>());
             _selectionSuccessCalculator = new SelectionSuccessCalculator(_prizeResultsTableHelper, _selectionEngine);
         }
 

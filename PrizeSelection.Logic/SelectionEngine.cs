@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using PrizeSelection.Model;
 
 namespace PrizeSelection.Logic
@@ -19,14 +21,17 @@ namespace PrizeSelection.Logic
 
         private readonly IPrizeSelectionTableHelper _prizeSelectionTableHelper;
         private readonly IPrizeResultsTableHelper _prizeResultsTableHelper;
+        private readonly ILogger<SelectionEngine> _logger;
         #endregion
 
         #region Constructors
 
-        public SelectionEngine(IPrizeSelectionTableHelper prizeSelectionTableHelper, IPrizeResultsTableHelper prizeResultsTableHelper)
+        public SelectionEngine(IPrizeSelectionTableHelper prizeSelectionTableHelper, IPrizeResultsTableHelper prizeResultsTableHelper,
+            ILogger<SelectionEngine> logger)
         {
             _prizeSelectionTableHelper = prizeSelectionTableHelper;
             _prizeResultsTableHelper = prizeResultsTableHelper;
+            _logger = logger;
         }
         #endregion
 
@@ -45,6 +50,8 @@ namespace PrizeSelection.Logic
                 }
             }
             #endregion
+
+            Stopwatch sw = Stopwatch.StartNew();
 
             //Set up variables and structures      
 
@@ -132,6 +139,8 @@ namespace PrizeSelection.Logic
                 }
 
             }
+            sw.Stop();
+            _logger.LogInformation($"finished a selection operation in {sw.ElapsedMilliseconds} milliseconds");
 
             return prizeResultTable;
         }
@@ -142,6 +151,7 @@ namespace PrizeSelection.Logic
             #region Validations       
             if (selectionCount > 100)
             {
+                _logger.LogWarning($"someone tried an invalid selectionCount: {selectionCount}");
                 throw new ArgumentException($"selectionCount must be 100 or LESS");
             }
             #endregion
@@ -158,6 +168,7 @@ namespace PrizeSelection.Logic
 
             IList<PrizeResultRow> combinedPrizeResultTable = new List<PrizeResultRow>();
 
+            _logger.LogInformation($"ready to perform selectionCount selections: {selectionCount}");
             for (int counter = 0; counter < selectionCount; counter++)
             {
                 IList<PrizeResultRow> prizeResultTable = SelectPrizes(selectionDomains, random);
