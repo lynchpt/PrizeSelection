@@ -21,13 +21,13 @@ namespace PrizeSelection.Logic
 
         private readonly IPrizeSelectionTableHelper _prizeSelectionTableHelper;
         private readonly IPrizeResultsTableHelper _prizeResultsTableHelper;
-        private readonly ILogger<SelectionEngine> _logger;
+        private readonly ILogger<ISelectionEngine> _logger;
         #endregion
 
         #region Constructors
 
         public SelectionEngine(IPrizeSelectionTableHelper prizeSelectionTableHelper, IPrizeResultsTableHelper prizeResultsTableHelper,
-            ILogger<SelectionEngine> logger)
+            ILogger<ISelectionEngine> logger)
         {
             _prizeSelectionTableHelper = prizeSelectionTableHelper;
             _prizeResultsTableHelper = prizeResultsTableHelper;
@@ -140,7 +140,7 @@ namespace PrizeSelection.Logic
 
             }
             sw.Stop();
-            _logger.LogInformation($"finished a selection operation in {sw.ElapsedMilliseconds} milliseconds");
+            _logger.LogDebug($"finished a selection operation in {sw.ElapsedMilliseconds} milliseconds");
 
             return prizeResultTable;
         }
@@ -168,7 +168,7 @@ namespace PrizeSelection.Logic
 
             IList<PrizeResultRow> combinedPrizeResultTable = new List<PrizeResultRow>();
 
-            _logger.LogInformation($"ready to perform selectionCount selections: {selectionCount}");
+            _logger.LogDebug($"ready to perform selectionCount selections: {selectionCount}");
             for (int counter = 0; counter < selectionCount; counter++)
             {
                 IList<PrizeResultRow> prizeResultTable = SelectPrizes(selectionDomains, random);

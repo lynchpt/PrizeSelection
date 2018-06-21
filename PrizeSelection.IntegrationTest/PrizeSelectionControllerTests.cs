@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using PrizeSelection.Api;
@@ -45,7 +46,7 @@ namespace PrizeSelection.IntegrationTest
             _resultsFormatter = new ResultsFormatter();
             _prizeSelectionTableHelper = new PrizeSelectionTableHelper(_resultsFormatter);
             _prizeResultsTableHelper = new PrizeResultsTableHelper();
-            _selectionEngine = new SelectionEngine(_prizeSelectionTableHelper, _prizeResultsTableHelper);
+            _selectionEngine = new SelectionEngine(_prizeSelectionTableHelper, _prizeResultsTableHelper, new NullLogger<ISelectionEngine>());
             _selectionSuccessCalculator = new SelectionSuccessCalculator(_prizeResultsTableHelper, _selectionEngine);
 
             _mapper = ConfigureMappings();

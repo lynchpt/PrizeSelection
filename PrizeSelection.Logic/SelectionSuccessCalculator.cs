@@ -171,11 +171,11 @@ namespace PrizeSelection.Logic
 
             //now that all the trials have recorded the number of pulls required to succeed, we can calculate the statistics
             successInfo.TrialsConducted = trials;
-            successInfo.MinPullsRequired = selectionsRequiredForTrialSuccess.Min();
-            successInfo.MaxPullsRequired = selectionsRequiredForTrialSuccess.Max();
-            successInfo.MeanPullsRequired = selectionsRequiredForTrialSuccess.Average();
-            successInfo.ModePullsRequired = GetModeFromList(selectionsRequiredForTrialSuccess);
-            successInfo.MedianPullsRequired = GetMedianFromList(selectionsRequiredForTrialSuccess);
+            successInfo.MinSelectionsRequired = selectionsRequiredForTrialSuccess.Min();
+            successInfo.MaxSelectionsRequired = selectionsRequiredForTrialSuccess.Max();
+            successInfo.MeanSelectionsRequired = selectionsRequiredForTrialSuccess.Average();
+            successInfo.ModeSelectionsRequired = GetModeFromList(selectionsRequiredForTrialSuccess);
+            successInfo.MedianSelectionsRequired = GetMedianFromList(selectionsRequiredForTrialSuccess);
 
             return successInfo;
 
@@ -185,7 +185,7 @@ namespace PrizeSelection.Logic
                 IList<SelectionDomain> selectionDomains, int subsetSize, Random random = null)
         {
             PrizeSelectionsForSuccessInfo successInfo = new PrizeSelectionsForSuccessInfo();
-            int trials = 10000; //harcoded so user can't DOS
+            int trials = 100; //harcoded so user can't DOS
             IList<int> selectionsRequiredForTrialSuccess = new List<int>();
 
             for (int trial = 0; trial < trials; trial++)
@@ -225,11 +225,11 @@ namespace PrizeSelection.Logic
 
             //now that all the trials have recorded the number of pulls required to succeed, we can calculate the statistics
             successInfo.TrialsConducted = trials;
-            successInfo.MinPullsRequired = selectionsRequiredForTrialSuccess.Min();
-            successInfo.MaxPullsRequired = selectionsRequiredForTrialSuccess.Max();
-            successInfo.MeanPullsRequired = selectionsRequiredForTrialSuccess.Average();
-            successInfo.ModePullsRequired = GetModeFromList(selectionsRequiredForTrialSuccess);
-            successInfo.MedianPullsRequired = GetMedianFromList(selectionsRequiredForTrialSuccess);
+            successInfo.MinSelectionsRequired = selectionsRequiredForTrialSuccess.Min();
+            successInfo.MaxSelectionsRequired = selectionsRequiredForTrialSuccess.Max();
+            successInfo.MeanSelectionsRequired = selectionsRequiredForTrialSuccess.Average();
+            successInfo.ModeSelectionsRequired = GetModeFromList(selectionsRequiredForTrialSuccess);
+            successInfo.MedianSelectionsRequired = GetMedianFromList(selectionsRequiredForTrialSuccess);
 
             return successInfo;
 

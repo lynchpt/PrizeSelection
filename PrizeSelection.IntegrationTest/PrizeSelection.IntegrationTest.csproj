@@ -18,4 +18,8 @@
     <ProjectReference Include="..\PrizeSelection.Api\PrizeSelection.Api.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(SolutionDir)PrizeSelection.Api\config.json&quot; &quot;$(ProjectDir)bin\Debug\netcoreapp2.0\&quot;&#xD;&#xA;&#xD;&#xA;copy /Y &quot;$(SolutionDir)PrizeSelection.Api\config.local.json&quot; &quot;$(ProjectDir)bin\Debug\netcoreapp2.0\&quot;&#xD;&#xA;" />
+  </Target>
+
 </Project>

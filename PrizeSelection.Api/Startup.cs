@@ -100,9 +100,6 @@ namespace PrizeSelection.Api
 
         protected virtual void ConfigureDependencyInjection(IServiceCollection services)
         {
-            //services.AddScoped<IAbilitiesLogic, AbilitiesLogic>();
-            //private readonly IPrizeSelectionTableHelper _prizeSelectionTableHelper;
-            //private readonly ISelectionEngine _selectionEngine; IResultsFormatter
             services.AddScoped<IResultsFormatter, ResultsFormatter>();
             services.AddScoped<IPrizeSelectionTableHelper, PrizeSelectionTableHelper>();
             services.AddScoped<IPrizeResultsTableHelper, PrizeResultsTableHelper>();
@@ -124,12 +121,13 @@ namespace PrizeSelection.Api
         {
             string appInsightsKey = Configuration["LoggingOptions:ApplicationInsightsKey"];
             string appComponentName = Configuration["LoggingOptions:AppComponentName"];
+            string logFilePath = Configuration["LoggingOptions:LogFilePath"];
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
+                .MinimumLevel.Information()
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty(LoggingOptionsAppComponentNameKey, appComponentName)
-                //.WriteTo.RollingFile(rollingFileLogPath).MinimumLevel.Information()
+                //.WriteTo.RollingFile(logFilePath).MinimumLevel.Information()
                 .WriteTo.ApplicationInsightsEvents(appInsightsKey).MinimumLevel.Information()
                 .WriteTo.Console(theme: SystemConsoleTheme.Literate).MinimumLevel.Information()
                 .CreateLogger();
