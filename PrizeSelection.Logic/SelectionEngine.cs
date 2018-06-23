@@ -222,7 +222,7 @@ namespace PrizeSelection.Logic
 
             //clean up list to allow for better distincting. Main cleanup is if a prize is in multiple categories, 
             //each its categeory names should be replaced by "Multi-Category"
-            var categoriesByPrizes = from pn in prizeNames group pn.CategoryName by pn.PrizeName into g select new { PrizeName = g.Key, Categories = g.ToList() };
+            var categoriesByPrizes = from pn in prizeNames group pn.CategoryName by pn.PrizeName into g select new { PrizeName = g.Key, Categories = g.Distinct().ToList() };
             var multiCatPrizeNames = categoriesByPrizes.Where(gm => gm.Categories.Count > 1).Select(m => m.PrizeName).ToList();
 
             foreach (var item in prizeNames)
