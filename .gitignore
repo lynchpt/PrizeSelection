@@ -259,3 +259,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/PrizeSelection.Api/Properties/PublishProfiles/PrizeSelectionApi - Web Deploy.pubxml
